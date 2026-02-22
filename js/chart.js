@@ -7,7 +7,7 @@ import {
  * Build a horizontal bar-chart race.
  * Returns handles consumed by the animation module.
  */
-export function buildChart({ raw, dates, playerData, deckData, state }) {
+export function buildChart({ raw, state }) {
   const svg = d3
     .select("#chart")
     .attr("viewBox", `0 0 ${FULL_WIDTH} ${FULL_HEIGHT}`)
@@ -34,19 +34,16 @@ export function buildChart({ raw, dates, playerData, deckData, state }) {
   // Container for bars (below labels)
   const barG = svg.append("g").attr("class", "bars");
 
-  // ─── Color maps (stable per entity) ───
-  const playerColorMap = {};
-  playerData.forEach((d) => (playerColorMap[d.name] = d.color));
-  const deckColorMap = {};
-  deckData.forEach((d) => (deckColorMap[d.name] = d.color));
-
-  // ─── Snapshot helpers ───
+  // ─── Snapshot helpers (read live from state.data) ───
   function getPlayerSnapshot(idx) {
+    const { playerData } = state.data;
+    const colorMap = {};
+    playerData.forEach((d) => (colorMap[d.name] = d.color));
     return playerData
       .map((d) => ({
         name: d.name,
         total: d.values[idx].total,
-        color: playerColorMap[d.name],
+        color: colorMap[d.name],
         played: d.values[idx].played,
         date: d.values[idx].date,
       }))
@@ -56,11 +53,14 @@ export function buildChart({ raw, dates, playerData, deckData, state }) {
   }
 
   function getDeckSnapshot(idx) {
+    const { deckData } = state.data;
+    const colorMap = {};
+    deckData.forEach((d) => (colorMap[d.name] = d.color));
     return deckData
       .map((d) => ({
         name: d.name,
         total: d.values[idx].total,
-        color: deckColorMap[d.name],
+        color: colorMap[d.name],
         date: d.values[idx].date,
       }))
       .filter((d) => d.total > 0)
@@ -78,7 +78,7 @@ export function buildChart({ raw, dates, playerData, deckData, state }) {
       return;
     }
 
-    const idx = Math.min(step - 1, dates.length - 1);
+    const idx = Math.min(step - 1, state.data.dates.length - 1);
     const snapshot =
       state.viewMode === "deckwins"
         ? getDeckSnapshot(idx)
@@ -229,5 +229,5 @@ export function buildChart({ raw, dates, playerData, deckData, state }) {
       .on("mouseout", () => tooltip.style("opacity", 0));
   }
 
-  return { dateDisplay, dates, renderStep };
+  return { dateDisplay, renderStep };
 }

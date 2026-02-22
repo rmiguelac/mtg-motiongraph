@@ -1,12 +1,17 @@
 /**
- * Animation controller — play, pause, reset, speed & top-3 toggle.
+ * Animation controller — play, pause, reset, speed, views & month filter.
  */
-export function initAnimation({ chart, state }) {
-  const { dateDisplay, dates, renderStep } = chart;
+export function initAnimation({ chart, state, raw, months, processData }) {
+  const { dateDisplay, renderStep } = chart;
 
   let animTimer = null;
 
+  function getDates() {
+    return state.data.dates;
+  }
+
   function setStep(step) {
+    const dates = getDates();
     state.currentStep = Math.min(step, dates.length);
     const dur = state.speed * 0.85;
 
@@ -31,11 +36,12 @@ export function initAnimation({ chart, state }) {
 
   function play() {
     stop();
+    const dates = getDates();
     if (state.currentStep >= dates.length) state.currentStep = 0;
     animTimer = setInterval(() => {
       state.currentStep++;
       setStep(state.currentStep);
-      if (state.currentStep >= dates.length) stop();
+      if (state.currentStep >= getDates().length) stop();
     }, state.speed);
     // Kick off immediately
     state.currentStep++;
@@ -74,13 +80,29 @@ export function initAnimation({ chart, state }) {
     state.viewMode = mode;
     d3.selectAll(".view-btn").classed("active", false);
     d3.select(mode === "ranking" ? "#btn-ranking" : "#btn-deckwins").classed("active", true);
-    // Reset and replay so the chart rebuilds with the new data source
     reset();
     setTimeout(play, 300);
   }
 
   d3.select("#btn-ranking").on("click", () => switchView("ranking"));
   d3.select("#btn-deckwins").on("click", () => switchView("deckwins"));
+
+  // ─── Month filter ───
+  const monthSelect = d3.select("#month-filter");
+
+  // Populate options from data
+  months.forEach((m) => {
+    const label = m.charAt(0).toUpperCase() + m.slice(1);
+    monthSelect.append("option").attr("value", m).text(label);
+  });
+
+  monthSelect.on("change", function () {
+    const val = this.value || null;
+    state.monthFilter = val;
+    state.data = processData(raw, val);
+    reset();
+    setTimeout(play, 300);
+  });
 
   // Auto-play on load
   setTimeout(play, 600);

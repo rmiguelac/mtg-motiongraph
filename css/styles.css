@@ -66,6 +66,28 @@ h1 {
   justify-content: center;
 }
 
+select {
+  background: #21262d;
+  color: #e6edf3;
+  border: 1px solid #30363d;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-family: "Inter", sans-serif;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+select:hover {
+  background: #30363d;
+  border-color: #8b949e;
+}
+
+select:focus {
+  outline: none;
+  border-color: #c9a84c;
+}
+
 button {
   background: #21262d;
   color: #e6edf3;

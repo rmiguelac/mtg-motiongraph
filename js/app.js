@@ -1,4 +1,4 @@
-import { loadData } from "./data.js";
+import { loadData, processData } from "./data.js";
 import { buildChart } from "./chart.js";
 import { initAnimation } from "./animation.js";
 
@@ -9,12 +9,19 @@ const state = {
   hiddenPlayers: new Set(),
   top3Mode: false,
   viewMode: "ranking",  // "ranking" | "deckwins"
+  monthFilter: null,     // null = all months
+  // Mutable processed data — updated when month filter changes
+  data: { dates: [], playerData: [], deckData: [] },
 };
 
 async function main() {
-  const { raw, dates, playerData, deckData } = await loadData("data/data.csv");
-  const chart = buildChart({ raw, dates, playerData, deckData, state });
-  initAnimation({ chart, state });
+  const { raw, months } = await loadData("data/data.csv");
+
+  // Initial processing (all months)
+  state.data = processData(raw, null);
+
+  const chart = buildChart({ raw, state });
+  initAnimation({ chart, state, raw, months, processData });
 }
 
 main();
