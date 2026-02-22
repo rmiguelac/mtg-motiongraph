@@ -37,6 +37,25 @@ h1 {
   margin-bottom: 1.25rem;
 }
 
+/* ─── Data views ─── */
+.data-views {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.view-btn {
+  border-color: #c9a84c;
+  color: #c9a84c;
+}
+
+.view-btn:hover {
+  background: rgba(201, 168, 76, 0.15);
+}
+
 /* ─── Controls ─── */
 .controls {
   display: flex;

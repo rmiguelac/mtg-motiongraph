@@ -9,6 +9,12 @@ export const HEIGHT = FULL_HEIGHT - MARGIN.top - MARGIN.bottom;
 export const MAX_BARS = 12; // max visible bars at once
 export const BAR_PADDING = 0.15;
 
+// ─── Date helper (avoids UTC-vs-local off-by-one) ───
+export function parseLocalDate(str) {
+  const [y, m, d] = str.replace(/\./g, "-").split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
 // ─── Color palette ───
 export const PALETTE = [
   "#58a6ff", "#f78166", "#56d364", "#d2a8ff", "#e3b341",

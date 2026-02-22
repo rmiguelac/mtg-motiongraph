@@ -1,4 +1,4 @@
-import { PALETTE } from "./config.js";
+import { PALETTE, parseLocalDate } from "./config.js";
 
 /**
  * Load and process the CSV data.
@@ -14,7 +14,7 @@ export async function loadData(csvPath) {
     d.losses = +d.losses;
     d.draws = +d.draws;
     d.position = +d.position;
-    d.dateObj = new Date(d.date.replace(/\./g, "-"));
+    d.dateObj = parseLocalDate(d.date);
   });
 
   // Sort by date
@@ -23,7 +23,7 @@ export async function loadData(csvPath) {
   // Unique sorted dates
   const dates = [...new Set(raw.map((d) => d.date))].sort(
     (a, b) =>
-      new Date(a.replace(/\./g, "-")) - new Date(b.replace(/\./g, "-"))
+      parseLocalDate(a) - parseLocalDate(b)
   );
 
   // All unique players
@@ -49,7 +49,7 @@ export async function loadData(csvPath) {
     allPlayers.forEach((p) => {
       cumulative[p].push({
         date,
-        dateObj: new Date(date.replace(/\./g, "-")),
+        dateObj: parseLocalDate(date),
         total: runningTotals[p],
         played: playersThisDate.has(p),
       });
@@ -72,5 +72,41 @@ export async function loadData(csvPath) {
   // Re-assign colors after sort so top players get distinct colors
   playerData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
 
-  return { raw, dates, playerData };
+  // ─── Deck wins data ───
+  const allDecks = [...new Set(raw.map((d) => d.deck))];
+  const deckCumulative = {};
+  const deckRunning = {};
+  allDecks.forEach((dk) => {
+    deckCumulative[dk] = [];
+    deckRunning[dk] = 0;
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = raw.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      deckRunning[row.deck] += row.wins;
+    });
+    allDecks.forEach((dk) => {
+      deckCumulative[dk].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: deckRunning[dk],
+      });
+    });
+  });
+
+  const deckData = allDecks.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: deckCumulative[name],
+  }));
+
+  deckData.sort(
+    (a, b) =>
+      b.values[b.values.length - 1].total -
+      a.values[a.values.length - 1].total
+  );
+  deckData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  return { raw, dates, playerData, deckData };
 }

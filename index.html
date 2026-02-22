@@ -12,6 +12,12 @@
   <h1>⚔ MTG Tournament Rankings</h1>
   <p class="subtitle">Cumulative points across tournament dates – bar chart race</p>
 
+  <div class="data-views">
+    <span class="speed-label">View:</span>
+    <button class="view-btn active" id="btn-ranking">🏆 Player Ranking</button>
+    <button class="view-btn" id="btn-deckwins">🃏 Deck Wins</button>
+  </div>
+
   <div class="controls">
     <button id="btn-play">▶ Play</button>
     <button id="btn-pause">⏸ Pause</button>
@@ -20,8 +26,6 @@
     <button class="speed-btn" data-speed="2000">Slow</button>
     <button class="speed-btn active" data-speed="1000">Normal</button>
     <button class="speed-btn" data-speed="400">Fast</button>
-    <span class="speed-label">│</span>
-    <button id="btn-top3">🏆 Top 3</button>
   </div>
 
   <div id="chart-container">

@@ -8,11 +8,12 @@ const state = {
   currentStep: 0,
   hiddenPlayers: new Set(),
   top3Mode: false,
+  viewMode: "ranking",  // "ranking" | "deckwins"
 };
 
 async function main() {
-  const { raw, dates, playerData } = await loadData("data/data.csv");
-  const chart = buildChart({ raw, dates, playerData, state });
+  const { raw, dates, playerData, deckData } = await loadData("data/data.csv");
+  const chart = buildChart({ raw, dates, playerData, deckData, state });
   initAnimation({ chart, state });
 }
 

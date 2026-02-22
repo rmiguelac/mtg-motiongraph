@@ -7,7 +7,7 @@ import {
  * Build a horizontal bar-chart race.
  * Returns handles consumed by the animation module.
  */
-export function buildChart({ raw, dates, playerData, state }) {
+export function buildChart({ raw, dates, playerData, deckData, state }) {
   const svg = d3
     .select("#chart")
     .attr("viewBox", `0 0 ${FULL_WIDTH} ${FULL_HEIGHT}`)
@@ -34,18 +34,33 @@ export function buildChart({ raw, dates, playerData, state }) {
   // Container for bars (below labels)
   const barG = svg.append("g").attr("class", "bars");
 
-  // ─── Color map (stable per player) ───
-  const colorMap = {};
-  playerData.forEach((d) => (colorMap[d.name] = d.color));
+  // ─── Color maps (stable per entity) ───
+  const playerColorMap = {};
+  playerData.forEach((d) => (playerColorMap[d.name] = d.color));
+  const deckColorMap = {};
+  deckData.forEach((d) => (deckColorMap[d.name] = d.color));
 
-  // ─── Snapshot helper: ranked list at a given date-index ───
-  function getSnapshot(idx) {
+  // ─── Snapshot helpers ───
+  function getPlayerSnapshot(idx) {
     return playerData
       .map((d) => ({
         name: d.name,
         total: d.values[idx].total,
-        color: colorMap[d.name],
+        color: playerColorMap[d.name],
         played: d.values[idx].played,
+        date: d.values[idx].date,
+      }))
+      .filter((d) => d.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, MAX_BARS);
+  }
+
+  function getDeckSnapshot(idx) {
+    return deckData
+      .map((d) => ({
+        name: d.name,
+        total: d.values[idx].total,
+        color: deckColorMap[d.name],
         date: d.values[idx].date,
       }))
       .filter((d) => d.total > 0)
@@ -64,10 +79,16 @@ export function buildChart({ raw, dates, playerData, state }) {
     }
 
     const idx = Math.min(step - 1, dates.length - 1);
-    const snapshot = getSnapshot(idx);
+    const snapshot =
+      state.viewMode === "deckwins"
+        ? getDeckSnapshot(idx)
+        : getPlayerSnapshot(idx);
 
-    // Filter for top3 mode
-    const visible = state.top3Mode ? snapshot.slice(0, 3) : snapshot;
+    // Filter for top3 mode (only applies to player ranking)
+    const visible =
+      state.top3Mode && state.viewMode === "ranking"
+        ? snapshot.slice(0, 3)
+        : snapshot;
     const names = visible.map((d) => d.name);
 
     // Update scales
@@ -182,16 +203,22 @@ export function buildChart({ raw, dates, playerData, state }) {
     merged
       .select(".bar")
       .on("mouseover", function (event, d) {
-        const tourneyRows = raw.filter(
-          (r) => r.date === d.date && r.name === d.name
-        );
-        let html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
-        html += `<div>Cumulative: <strong>${d.total} pts</strong></div>`;
-        if (tourneyRows.length) {
-          const r = tourneyRows[0];
-          html += `<div>This tourney: ${r.points} pts (${r.wins}W-${r.losses}L-${r.draws}D)</div>`;
-          html += `<div>Deck: ${r.deck}</div>`;
-          html += `<div>Position: #${r.position}</div>`;
+        let html;
+        if (state.viewMode === "deckwins") {
+          html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>Cumulative wins: <strong>${d.total}</strong></div>`;
+        } else {
+          const tourneyRows = raw.filter(
+            (r) => r.date === d.date && r.name === d.name
+          );
+          html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>Cumulative: <strong>${d.total} pts</strong></div>`;
+          if (tourneyRows.length) {
+            const r = tourneyRows[0];
+            html += `<div>This tourney: ${r.points} pts (${r.wins}W-${r.losses}L-${r.draws}D)</div>`;
+            html += `<div>Deck: ${r.deck}</div>`;
+            html += `<div>Position: #${r.position}</div>`;
+          }
         }
         tooltip
           .html(html)

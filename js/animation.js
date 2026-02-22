@@ -18,7 +18,8 @@ export function initAnimation({ chart, state }) {
 
     renderStep(state.currentStep, dur);
 
-    const dt = new Date(dates[state.currentStep - 1].replace(/\./g, "-"));
+    const [y, m, d] = dates[state.currentStep - 1].split(".").map(Number);
+    const dt = new Date(y, m - 1, d);
     dateDisplay.text(
       dt.toLocaleDateString("pt-BR", {
         day: "2-digit",
@@ -68,12 +69,18 @@ export function initAnimation({ chart, state }) {
     }
   });
 
-  d3.select("#btn-top3").on("click", function () {
-    state.top3Mode = !state.top3Mode;
-    d3.select(this).classed("active", state.top3Mode);
-    // Re-render current frame with the filter
-    if (state.currentStep > 0) renderStep(state.currentStep, 500);
-  });
+  // ─── View switching ───
+  function switchView(mode) {
+    state.viewMode = mode;
+    d3.selectAll(".view-btn").classed("active", false);
+    d3.select(mode === "ranking" ? "#btn-ranking" : "#btn-deckwins").classed("active", true);
+    // Reset and replay so the chart rebuilds with the new data source
+    reset();
+    setTimeout(play, 300);
+  }
+
+  d3.select("#btn-ranking").on("click", () => switchView("ranking"));
+  d3.select("#btn-deckwins").on("click", () => switchView("deckwins"));
 
   // Auto-play on load
   setTimeout(play, 600);
