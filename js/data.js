@@ -305,5 +305,40 @@ export function processData(raw, monthFilter) {
   );
   attendanceData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
 
-  return { dates, playerData, deckData, podiumData, top3Data, deckPopData, winRateData, attendanceData };
+  // ─── Deck diversity data (unique decks per player) ───
+  const divCumulative = {};
+  const divSets = {};
+  allPlayers.forEach((p) => {
+    divCumulative[p] = [];
+    divSets[p] = new Set();
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      divSets[row.name].add(row.deck);
+    });
+    allPlayers.forEach((p) => {
+      divCumulative[p].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: divSets[p].size,
+      });
+    });
+  });
+
+  const deckDivData = allPlayers.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: divCumulative[name],
+  }));
+
+  deckDivData.sort(
+    (a, b) =>
+      b.values[b.values.length - 1].total -
+      a.values[a.values.length - 1].total
+  );
+  deckDivData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  return { dates, playerData, deckData, podiumData, top3Data, deckPopData, winRateData, attendanceData, deckDivData };
 }

@@ -91,6 +91,7 @@ export function initAnimation({ chart, state, raw, months, processData }) {
   d3.select("#btn-deckpop").on("click", () => switchView("deckpop"));
   d3.select("#btn-winrate").on("click", () => switchView("winrate"));
   d3.select("#btn-attendance").on("click", () => switchView("attendance"));
+  d3.select("#btn-deckdiv").on("click", () => switchView("deckdiv"));
 
   // ─── Month filter ───
   const monthSelect = d3.select("#month-filter");
