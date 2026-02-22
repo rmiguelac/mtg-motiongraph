@@ -227,5 +227,47 @@ export function processData(raw, monthFilter) {
   );
   deckPopData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
 
-  return { dates, playerData, deckData, podiumData, top3Data, deckPopData };
+  // ─── Player win rate data (cumulative win %) ───
+  const wrCumulative = {};
+  const wrRunning = {};
+  allPlayers.forEach((p) => {
+    wrCumulative[p] = [];
+    wrRunning[p] = { w: 0, l: 0, d: 0 };
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      wrRunning[row.name].w += row.wins;
+      wrRunning[row.name].l += row.losses;
+      wrRunning[row.name].d += row.draws;
+    });
+    allPlayers.forEach((p) => {
+      const { w, l, d: dr } = wrRunning[p];
+      const games = w + l + dr;
+      wrCumulative[p].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: games > 0 ? Math.round((w / games) * 1000) / 10 : 0,
+        wins: w,
+        games,
+      });
+    });
+  });
+
+  const winRateData = allPlayers.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: wrCumulative[name],
+  }));
+
+  // Sort by final win rate, break ties by games played
+  winRateData.sort((a, b) => {
+    const aLast = a.values[a.values.length - 1];
+    const bLast = b.values[b.values.length - 1];
+    return bLast.total - aLast.total || bLast.games - aLast.games;
+  });
+  winRateData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  return { dates, playerData, deckData, podiumData, top3Data, deckPopData, winRateData };
 }

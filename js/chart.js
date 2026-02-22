@@ -116,6 +116,24 @@ export function buildChart({ raw, state }) {
       .slice(0, MAX_BARS);
   }
 
+  function getWinRateSnapshot(idx) {
+    const { winRateData } = state.data;
+    const colorMap = {};
+    winRateData.forEach((d) => (colorMap[d.name] = d.color));
+    return winRateData
+      .map((d) => ({
+        name: d.name,
+        total: d.values[idx].total,
+        color: colorMap[d.name],
+        date: d.values[idx].date,
+        wins: d.values[idx].wins,
+        games: d.values[idx].games,
+      }))
+      .filter((d) => d.games > 0)
+      .sort((a, b) => b.total - a.total || b.games - a.games)
+      .slice(0, MAX_BARS);
+  }
+
   // ─── Render one frame ───
   function renderStep(step, dur) {
     if (step === 0) {
@@ -132,6 +150,7 @@ export function buildChart({ raw, state }) {
     else if (state.viewMode === "podium") snapshot = getPodiumSnapshot(idx);
     else if (state.viewMode === "top3finishes") snapshot = getTop3Snapshot(idx);
     else if (state.viewMode === "deckpop") snapshot = getDeckPopSnapshot(idx);
+    else if (state.viewMode === "winrate") snapshot = getWinRateSnapshot(idx);
     else snapshot = getPlayerSnapshot(idx);
 
     // Filter for top3 mode (only applies to player ranking)
@@ -143,7 +162,8 @@ export function buildChart({ raw, state }) {
 
     // Update scales
     const maxVal = d3.max(visible, (d) => d.total) || 1;
-    x.domain([0, maxVal * 1.12]);
+    const xMax = state.viewMode === "winrate" ? 100 : maxVal * 1.12;
+    x.domain([0, xMax]);
     y.domain(names);
 
     // Animate x axis
@@ -244,7 +264,12 @@ export function buildChart({ raw, state }) {
       .attr("x", (d) => x(d.total) + 6)
       .attr("y", y.bandwidth() / 2)
       .tween("text", function (d) {
-        const prev = +this.textContent || 0;
+        const prevText = (this.textContent.match(/[\d.]+/) || ["0"])[0];
+        const prev = +prevText;
+        if (state.viewMode === "winrate") {
+          const interp = d3.interpolateNumber(prev, d.total);
+          return (t) => (this.textContent = interp(t).toFixed(1) + "%  (" + d.games + " games)");
+        }
         const interp = d3.interpolateRound(prev, d.total);
         return (t) => (this.textContent = interp(t));
       });
@@ -266,6 +291,10 @@ export function buildChart({ raw, state }) {
         } else if (state.viewMode === "deckpop") {
           html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
           html += `<div>Times played: <strong>${d.total}</strong></div>`;
+        } else if (state.viewMode === "winrate") {
+          html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>Win rate: <strong>${d.total}%</strong></div>`;
+          html += `<div>${d.wins}W in ${d.games} games</div>`;
         } else {
           const tourneyRows = raw.filter(
             (r) => r.date === d.date && r.name === d.name
