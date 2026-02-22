@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MTG Motion Graph – Tournament Rankings</title>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: "Inter", sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    h1 {
+      font-family: "Cinzel", serif;
+      font-size: 2rem;
+      text-align: center;
+      margin-bottom: 0.25rem;
+      background: linear-gradient(135deg, #c9a84c, #f5d98e, #c9a84c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.05em;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #8b949e;
+      margin-bottom: 1.25rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      background: #21262d;
+      color: #e6edf3;
+      border: 1px solid #30363d;
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: "Inter", sans-serif;
+    }
+
+    button:hover {
+      background: #30363d;
+      border-color: #8b949e;
+    }
+
+    button.active {
+      background: #c9a84c;
+      color: #0d1117;
+      border-color: #c9a84c;
+      font-weight: 600;
+    }
+
+    .speed-label {
+      font-size: 0.8rem;
+      color: #8b949e;
+    }
+
+    #chart-container {
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 1100px;
+      position: relative;
+    }
+
+    .date-display {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #c9a84c;
+      opacity: 0.5;
+      font-family: "Cinzel", serif;
+      pointer-events: none;
+    }
+
+    .tooltip {
+      position: absolute;
+      background: #1c2128;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
+      font-size: 0.78rem;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      z-index: 10;
+      line-height: 1.5;
+    }
+
+    .tooltip .name {
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem 1rem;
+      margin-top: 1rem;
+      justify-content: center;
+      max-width: 1100px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.75rem;
+      color: #8b949e;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      user-select: none;
+    }
+
+    .legend-item:hover {
+      color: #e6edf3;
+    }
+
+    .legend-item.dimmed {
+      opacity: 0.3;
+    }
+
+    .legend-swatch {
+      width: 14px;
+      height: 3px;
+      border-radius: 2px;
+    }
+
+    svg text {
+      font-family: "Inter", sans-serif;
+    }
+
+    .grid line {
+      stroke: #21262d;
+      stroke-dasharray: 2, 3;
+    }
+
+    .grid .domain {
+      display: none;
+    }
+
+    .axis text {
+      fill: #8b949e;
+      font-size: 11px;
+    }
+
+    .axis .domain,
+    .axis line {
+      stroke: #30363d;
+    }
+
+    .player-label {
+      font-size: 11px;
+      font-weight: 600;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>⚔ MTG Tournament Rankings</h1>
+  <p class="subtitle">Cumulative points across tournament dates – animated timeline</p>
+
+  <div class="controls">
+    <button id="btn-play">▶ Play</button>
+    <button id="btn-pause">⏸ Pause</button>
+    <button id="btn-reset">↺ Reset</button>
+    <span class="speed-label">Speed:</span>
+    <button class="speed-btn" data-speed="2000">Slow</button>
+    <button class="speed-btn active" data-speed="1000">Normal</button>
+    <button class="speed-btn" data-speed="400">Fast</button>
+    <span class="speed-label">│</span>
+    <button id="btn-top3">🏆 Top 3</button>
+  </div>
+
+  <div id="chart-container">
+    <div class="date-display" id="date-display"></div>
+    <div class="tooltip" id="tooltip"></div>
+    <svg id="chart"></svg>
+  </div>
+
+  <div class="legend" id="legend"></div>
+
+  <script>
+    // ─── Config ───
+    const MARGIN = { top: 30, right: 120, bottom: 50, left: 55 };
+    const FULL_WIDTH = 1060;
+    const FULL_HEIGHT = 520;
+    const WIDTH = FULL_WIDTH - MARGIN.left - MARGIN.right;
+    const HEIGHT = FULL_HEIGHT - MARGIN.top - MARGIN.bottom;
+
+    let speed = 1000;
+    let animTimer = null;
+    let currentStep = 0;
+    let hiddenPlayers = new Set();
+    let top3Mode = false;
+
+    const svg = d3
+      .select("#chart")
+      .attr("viewBox", `0 0 ${FULL_WIDTH} ${FULL_HEIGHT}`)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .append("g")
+      .attr("transform", `translate(${MARGIN.left},${MARGIN.top})`);
+
+    const tooltip = d3.select("#tooltip");
+    const dateDisplay = d3.select("#date-display");
+
+    // ─── Color palette ───
+    const palette = [
+      "#58a6ff", "#f78166", "#56d364", "#d2a8ff", "#e3b341",
+      "#f778ba", "#79c0ff", "#ffa657", "#7ee787", "#bc8cff",
+      "#db6d28", "#3fb950", "#388bfd", "#ff7b72", "#d29922",
+      "#39d353", "#a371f7", "#f0883e", "#2ea043", "#8b949e",
+      "#bf4b8a", "#56a0ce", "#c9d1d9", "#6e7681", "#e06c75",
+    ];
+
+    // ─── Load & process ───
+    d3.csv("data/data.csv").then((raw) => {
+      // Parse rows
+      raw.forEach((d) => {
+        d.points = +d.points;
+        d.wins = +d.wins;
+        d.losses = +d.losses;
+        d.draws = +d.draws;
+        d.position = +d.position;
+        d.dateObj = new Date(d.date.replace(/\./g, "-"));
+      });
+
+      // Sort by date
+      raw.sort((a, b) => a.dateObj - b.dateObj);
+
+      // Unique sorted dates
+      const dates = [...new Set(raw.map((d) => d.date))].sort(
+        (a, b) => new Date(a.replace(/\./g, "-")) - new Date(b.replace(/\./g, "-"))
+      );
+
+      // All players
+      const allPlayers = [...new Set(raw.map((d) => d.name))];
+
+      // Build cumulative data: for each date, each player accumulates points
+      const cumulative = {};
+      allPlayers.forEach((p) => (cumulative[p] = []));
+
+      let runningTotals = {};
+      allPlayers.forEach((p) => (runningTotals[p] = 0));
+
+      dates.forEach((date) => {
+        const tourneyRows = raw.filter((d) => d.date === date);
+        const playersThisDate = new Set();
+
+        tourneyRows.forEach((row) => {
+          runningTotals[row.name] += row.points;
+          playersThisDate.add(row.name);
+        });
+
+        allPlayers.forEach((p) => {
+          cumulative[p].push({
+            date,
+            dateObj: new Date(date.replace(/\./g, "-")),
+            total: runningTotals[p],
+            played: playersThisDate.has(p),
+          });
+        });
+      });
+
+      // Convert to array form for D3
+      const playerData = allPlayers.map((name, i) => ({
+        name,
+        color: palette[i % palette.length],
+        values: cumulative[name],
+      }));
+
+      // Sort by final total (desc) to put top players first
+      playerData.sort(
+        (a, b) =>
+          b.values[b.values.length - 1].total -
+          a.values[a.values.length - 1].total
+      );
+
+      // Re-assign colors after sort
+      playerData.forEach((d, i) => (d.color = palette[i % palette.length]));
+
+      // Compute the top 3 players at a given animation step (date index)
+      function getTop3AtStep(step) {
+        const idx = Math.max(0, Math.min(step - 1, dates.length - 1));
+        const ranked = playerData
+          .map((d) => ({ name: d.name, total: d.values[idx].total }))
+          .filter((d) => d.total > 0)
+          .sort((a, b) => b.total - a.total);
+        return new Set(ranked.slice(0, 3).map((d) => d.name));
+      }
+
+      // Visibility helper: respects both dynamic top3 filter and legend toggles
+      function isVisible(name) {
+        if (top3Mode) {
+          const step = Math.max(1, currentStep);
+          const top3Now = getTop3AtStep(step);
+          if (!top3Now.has(name)) return false;
+        }
+        if (hiddenPlayers.has(name)) return false;
+        return true;
+      }
+
+      const maxTotal = d3.max(playerData, (d) =>
+        d3.max(d.values, (v) => v.total)
+      );
+
+      // ─── Scales ───
+      const x = d3
+        .scalePoint()
+        .domain(dates)
+        .range([0, WIDTH])
+        .padding(0.3);
+
+      const y = d3.scaleLinear().domain([0, maxTotal + 5]).range([HEIGHT, 0]);
+
+      // ─── Grid ───
+      svg
+        .append("g")
+        .attr("class", "grid")
+        .call(d3.axisLeft(y).tickSize(-WIDTH).tickFormat(""));
+
+      // ─── Axes ───
+      const formatDate = (d) => {
+        const dt = new Date(d.replace(/\./g, "-"));
+        return dt.toLocaleDateString("pt-BR", {
+          day: "2-digit",
+          month: "short",
+        });
+      };
+
+      svg
+        .append("g")
+        .attr("class", "axis x-axis")
+        .attr("transform", `translate(0,${HEIGHT})`)
+        .call(d3.axisBottom(x).tickFormat(formatDate))
+        .selectAll("text")
+        .attr("transform", "rotate(-40)")
+        .style("text-anchor", "end");
+
+      svg
+        .append("g")
+        .attr("class", "axis y-axis")
+        .call(d3.axisLeft(y).ticks(8));
+
+      // Axis labels
+      svg
+        .append("text")
+        .attr("x", WIDTH / 2)
+        .attr("y", HEIGHT + 46)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#8b949e")
+        .attr("font-size", "12px")
+        .text("Tournament Date");
+
+      svg
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -HEIGHT / 2)
+        .attr("y", -40)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#8b949e")
+        .attr("font-size", "12px")
+        .text("Cumulative Points");
+
+      // ─── Line generator ───
+      const line = d3
+        .line()
+        .x((d) => x(d.date))
+        .y((d) => y(d.total))
+        .curve(d3.curveMonotoneX);
+
+      // ─── Draw paths & dots ───
+      const playerGroups = svg
+        .selectAll(".player-group")
+        .data(playerData)
+        .join("g")
+        .attr("class", "player-group");
+
+      const paths = playerGroups
+        .append("path")
+        .attr("fill", "none")
+        .attr("stroke", (d) => d.color)
+        .attr("stroke-width", 2.5)
+        .attr("stroke-linecap", "round")
+        .attr("stroke-linejoin", "round")
+        .attr("d", (d) => line(d.values));
+
+      // Invisible wider paths for hover
+      playerGroups
+        .append("path")
+        .attr("fill", "none")
+        .attr("stroke", "transparent")
+        .attr("stroke-width", 14)
+        .attr("d", (d) => line(d.values))
+        .style("cursor", "pointer")
+        .on("mouseover", function (event, d) {
+          highlightPlayer(d.name);
+        })
+        .on("mouseout", () => resetHighlight());
+
+      const dotGroups = playerGroups
+        .selectAll(".dot")
+        .data((d) => d.values.map((v) => ({ ...v, name: d.name, color: d.color })))
+        .join("circle")
+        .attr("class", "dot")
+        .attr("cx", (d) => x(d.date))
+        .attr("cy", (d) => y(d.total))
+        .attr("r", (d) => (d.played ? 4 : 0))
+        .attr("fill", (d) => d.color)
+        .attr("stroke", "#161b22")
+        .attr("stroke-width", 1.5)
+        .style("cursor", "pointer")
+        .on("mouseover", function (event, d) {
+          const tourneyRows = raw.filter(
+            (r) => r.date === d.date && r.name === d.name
+          );
+          let html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>Cumulative: <strong>${d.total} pts</strong></div>`;
+          if (tourneyRows.length) {
+            const r = tourneyRows[0];
+            html += `<div>This tourney: ${r.points} pts (${r.wins}W-${r.losses}L-${r.draws}D)</div>`;
+            html += `<div>Deck: ${r.deck}</div>`;
+            html += `<div>Position: #${r.position}</div>`;
+          }
+          tooltip
+            .html(html)
+            .style("opacity", 1)
+            .style("left", event.offsetX + 15 + "px")
+            .style("top", event.offsetY - 10 + "px");
+          highlightPlayer(d.name);
+        })
+        .on("mouseout", function () {
+          tooltip.style("opacity", 0);
+          resetHighlight();
+        });
+
+      // ─── End labels ───
+      const labels = svg
+        .selectAll(".player-label")
+        .data(playerData)
+        .join("text")
+        .attr("class", "player-label")
+        .attr("fill", (d) => d.color)
+        .attr("x", WIDTH + 8)
+        .attr("y", (d) => y(d.values[d.values.length - 1].total))
+        .attr("dy", "0.35em")
+        .text(
+          (d) =>
+            `${d.name.split(" ")[0]} (${d.values[d.values.length - 1].total})`
+        );
+
+      // Resolve label collisions
+      resolveCollisions(labels, playerData);
+
+      // ─── Animation via clip-rect ───
+      const clipRect = svg
+        .append("clipPath")
+        .attr("id", "clip-anim")
+        .append("rect")
+        .attr("x", 0)
+        .attr("y", -10)
+        .attr("height", HEIGHT + 20)
+        .attr("width", 0);
+
+      playerGroups.attr("clip-path", "url(#clip-anim)");
+      labels.attr("clip-path", "url(#clip-anim)");
+
+      function setStep(step) {
+        currentStep = Math.min(step, dates.length);
+        if (currentStep === 0) {
+          clipRect.attr("width", 0);
+          dateDisplay.text("");
+          return;
+        }
+        const targetX = x(dates[currentStep - 1]) + 40;
+        clipRect
+          .transition()
+          .duration(speed * 0.8)
+          .ease(d3.easeLinear)
+          .attr("width", targetX);
+
+        const dt = new Date(dates[currentStep - 1].replace(/\./g, "-"));
+        dateDisplay.text(
+          dt.toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+          })
+        );
+
+        // Refresh visibility so top 3 updates dynamically at each step
+        if (top3Mode) applyVisibility(speed * 0.6);
+      }
+
+      function play() {
+        stop();
+        if (currentStep >= dates.length) currentStep = 0;
+        animTimer = setInterval(() => {
+          currentStep++;
+          setStep(currentStep);
+          if (currentStep >= dates.length) stop();
+        }, speed);
+        // Kick off immediately
+        currentStep++;
+        setStep(currentStep);
+      }
+
+      function stop() {
+        if (animTimer) clearInterval(animTimer);
+        animTimer = null;
+      }
+
+      function reset() {
+        stop();
+        currentStep = 0;
+        clipRect.interrupt().attr("width", 0);
+        dateDisplay.text("");
+        if (top3Mode) applyVisibility(200);
+      }
+
+      // ─── Highlight helpers ───
+      function highlightPlayer(name) {
+        playerGroups
+          .transition()
+          .duration(150)
+          .style("opacity", (d) => (d.name === name ? 1 : 0.12));
+        labels
+          .transition()
+          .duration(150)
+          .style("opacity", (d) => (d.name === name ? 1 : 0.12));
+      }
+
+      function resetHighlight() {
+        applyVisibility(300);
+      }
+
+      function applyVisibility(dur = 300) {
+        playerGroups
+          .transition()
+          .duration(dur)
+          .style("opacity", (d) => (isVisible(d.name) ? 1 : 0.06));
+        labels
+          .transition()
+          .duration(dur)
+          .style("opacity", (d) => (isVisible(d.name) ? 1 : 0.06));
+      }
+
+      // ─── Legend ───
+      const legend = d3.select("#legend");
+      playerData.forEach((p) => {
+        const item = legend
+          .append("div")
+          .attr("class", "legend-item")
+          .on("click", () => {
+            if (hiddenPlayers.has(p.name)) {
+              hiddenPlayers.delete(p.name);
+              item.classed("dimmed", false);
+            } else {
+              hiddenPlayers.add(p.name);
+              item.classed("dimmed", true);
+            }
+            applyVisibility();
+          });
+
+        item
+          .append("div")
+          .attr("class", "legend-swatch")
+          .style("background", p.color);
+
+        item.append("span").text(p.name);
+      });
+
+      // ─── Button wiring ───
+      d3.select("#btn-play").on("click", play);
+      d3.select("#btn-pause").on("click", stop);
+      d3.select("#btn-reset").on("click", reset);
+
+      d3.selectAll(".speed-btn").on("click", function () {
+        d3.selectAll(".speed-btn").classed("active", false);
+        d3.select(this).classed("active", true);
+        speed = +this.dataset.speed;
+        if (animTimer) {
+          stop();
+          play();
+        }
+      });
+
+      // ─── Top 3 toggle ───
+      d3.select("#btn-top3").on("click", function () {
+        top3Mode = !top3Mode;
+        d3.select(this).classed("active", top3Mode);
+        applyVisibility(400);
+      });
+
+      // Auto-play on load
+      setTimeout(play, 600);
+    });
+
+    // ─── Collision avoidance for end labels ───
+    function resolveCollisions(labels, data) {
+      const labelHeight = 13;
+      const positions = data.map((d, i) => ({
+        i,
+        y: parseFloat(labels.nodes()[i].getAttribute("y")),
+      }));
+      positions.sort((a, b) => a.y - b.y);
+
+      for (let iter = 0; iter < 20; iter++) {
+        let moved = false;
+        for (let j = 1; j < positions.length; j++) {
+          const gap = positions[j].y - positions[j - 1].y;
+          if (gap < labelHeight) {
+            const shift = (labelHeight - gap) / 2 + 0.5;
+            positions[j - 1].y -= shift;
+            positions[j].y += shift;
+            moved = true;
+          }
+        }
+        if (!moved) break;
+      }
+
+      positions.forEach((p) => {
+        d3.select(labels.nodes()[p.i]).attr("y", p.y);
+      });
+    }
+  </script>
+</body>
+</html>
