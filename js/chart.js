@@ -100,6 +100,22 @@ export function buildChart({ raw, state }) {
       .slice(0, MAX_BARS);
   }
 
+  function getDeckPopSnapshot(idx) {
+    const { deckPopData } = state.data;
+    const colorMap = {};
+    deckPopData.forEach((d) => (colorMap[d.name] = d.color));
+    return deckPopData
+      .map((d) => ({
+        name: d.name,
+        total: d.values[idx].total,
+        color: colorMap[d.name],
+        date: d.values[idx].date,
+      }))
+      .filter((d) => d.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, MAX_BARS);
+  }
+
   // ─── Render one frame ───
   function renderStep(step, dur) {
     if (step === 0) {
@@ -115,6 +131,7 @@ export function buildChart({ raw, state }) {
     if (state.viewMode === "deckwins") snapshot = getDeckSnapshot(idx);
     else if (state.viewMode === "podium") snapshot = getPodiumSnapshot(idx);
     else if (state.viewMode === "top3finishes") snapshot = getTop3Snapshot(idx);
+    else if (state.viewMode === "deckpop") snapshot = getDeckPopSnapshot(idx);
     else snapshot = getPlayerSnapshot(idx);
 
     // Filter for top3 mode (only applies to player ranking)
@@ -246,6 +263,9 @@ export function buildChart({ raw, state }) {
         } else if (state.viewMode === "top3finishes") {
           html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
           html += `<div>Top-3 finishes: <strong>${d.total}</strong></div>`;
+        } else if (state.viewMode === "deckpop") {
+          html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>Times played: <strong>${d.total}</strong></div>`;
         } else {
           const tourneyRows = raw.filter(
             (r) => r.date === d.date && r.name === d.name

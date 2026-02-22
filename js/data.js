@@ -192,5 +192,40 @@ export function processData(raw, monthFilter) {
   );
   top3Data.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
 
-  return { dates, playerData, deckData, podiumData, top3Data };
+  // ─── Deck popularity data (cumulative appearances) ───
+  const deckPopCumulative = {};
+  const deckPopRunning = {};
+  allDecks.forEach((dk) => {
+    deckPopCumulative[dk] = [];
+    deckPopRunning[dk] = 0;
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      deckPopRunning[row.deck] += 1;
+    });
+    allDecks.forEach((dk) => {
+      deckPopCumulative[dk].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: deckPopRunning[dk],
+      });
+    });
+  });
+
+  const deckPopData = allDecks.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: deckPopCumulative[name],
+  }));
+
+  deckPopData.sort(
+    (a, b) =>
+      b.values[b.values.length - 1].total -
+      a.values[a.values.length - 1].total
+  );
+  deckPopData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  return { dates, playerData, deckData, podiumData, top3Data, deckPopData };
 }
