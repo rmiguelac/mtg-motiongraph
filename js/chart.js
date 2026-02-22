@@ -179,7 +179,7 @@ export function buildChart({ raw, state }) {
         draws: d.values[idx].draws,
         games: d.values[idx].games,
       }))
-      .filter((d) => d.games > 0)
+      .filter((d) => d.games > 0 && d.draws > 0)
       .sort((a, b) => b.total - a.total || b.games - a.games)
       .slice(0, MAX_BARS);
   }
@@ -197,7 +197,7 @@ export function buildChart({ raw, state }) {
         draws: d.values[idx].draws,
         games: d.values[idx].games,
       }))
-      .filter((d) => d.games > 0)
+      .filter((d) => d.games > 0 && d.draws > 0)
       .sort((a, b) => b.total - a.total || b.games - a.games)
       .slice(0, MAX_BARS);
   }

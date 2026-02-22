@@ -12,19 +12,34 @@
   <h1>⚔ MTG Tournament Rankings</h1>
   <p class="subtitle">Cumulative points across tournament dates – bar chart race</p>
 
-  <div class="data-views">
-    <span class="speed-label">View:</span>
-    <button class="view-btn active" id="btn-ranking">🏆 Player Ranking</button>
-    <button class="view-btn" id="btn-deckwins">🃏 Deck Wins</button>
-    <button class="view-btn" id="btn-podium">🥇 1st Place</button>
-    <button class="view-btn" id="btn-top3finishes">🏅 Top 3 Finishes</button>
-    <button class="view-btn" id="btn-deckpop">📊 Deck Popularity</button>
-    <button class="view-btn" id="btn-winrate">📈 Win Rate</button>
-    <button class="view-btn" id="btn-attendance">📅 Attendance</button>
-    <button class="view-btn" id="btn-deckdiv">🎲 Deck Diversity</button>
-    <button class="view-btn" id="btn-playerdrawrate">🤝 Player Draw Rate</button>
-    <button class="view-btn" id="btn-deckdrawrate">🤝 Deck Draw Rate</button>
-    <button class="view-btn" id="btn-deckwinrate">🎯 Deck Win Rate</button>
+  <div class="view-nav">
+    <!-- Row 1: Player Ranking (always visible) -->
+    <div class="view-row view-row-main">
+      <button class="view-btn active" id="btn-ranking">🏆 Player Ranking</button>
+    </div>
+
+    <!-- Row 2: Category toggles -->
+    <div class="view-row view-row-categories">
+      <button class="category-btn" id="cat-player">⚔ Player Views</button>
+      <button class="category-btn" id="cat-deck">🃏 Deck Views</button>
+    </div>
+
+    <!-- Row 3: Sub-views (hidden by default) -->
+    <div class="view-row view-row-sub" id="sub-player" style="display:none">
+      <button class="view-btn" id="btn-podium">🥇 1st Place</button>
+      <button class="view-btn" id="btn-top3finishes">🏅 Top 3 Finishes</button>
+      <button class="view-btn" id="btn-winrate">📈 Win Rate</button>
+      <button class="view-btn" id="btn-attendance">📅 Attendance</button>
+      <button class="view-btn" id="btn-playerdrawrate">🤝 Draw Rate</button>
+    </div>
+
+    <div class="view-row view-row-sub" id="sub-deck" style="display:none">
+      <button class="view-btn" id="btn-deckwins">🃏 Deck Wins</button>
+      <button class="view-btn" id="btn-deckpop">📊 Popularity</button>
+      <button class="view-btn" id="btn-deckdiv">🎲 Diversity</button>
+      <button class="view-btn" id="btn-deckdrawrate">🤝 Draw Rate</button>
+      <button class="view-btn" id="btn-deckwinrate">🎯 Win Rate</button>
+    </div>
   </div>
 
   <div class="controls">

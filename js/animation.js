@@ -84,15 +84,58 @@ export function initAnimation({ chart, state, raw, months, processData }) {
     setTimeout(play, 300);
   }
 
-  d3.select("#btn-ranking").on("click", () => switchView("ranking"));
-  d3.select("#btn-deckwins").on("click", () => switchView("deckwins"));
+  // Category sub-row toggling
+  const subPlayer = document.getElementById("sub-player");
+  const subDeck = document.getElementById("sub-deck");
+
+  function showSubRow(category) {
+    d3.selectAll(".category-btn").classed("active", false);
+    if (category === "player") {
+      d3.select("#cat-player").classed("active", true);
+      subPlayer.style.display = "flex";
+      subDeck.style.display = "none";
+    } else {
+      d3.select("#cat-deck").classed("active", true);
+      subDeck.style.display = "flex";
+      subPlayer.style.display = "none";
+    }
+  }
+
+  d3.select("#cat-player").on("click", () => {
+    const isOpen = subPlayer.style.display === "flex";
+    subPlayer.style.display = isOpen ? "none" : "flex";
+    subDeck.style.display = "none";
+    d3.select("#cat-player").classed("active", !isOpen);
+    d3.select("#cat-deck").classed("active", false);
+  });
+
+  d3.select("#cat-deck").on("click", () => {
+    const isOpen = subDeck.style.display === "flex";
+    subDeck.style.display = isOpen ? "none" : "flex";
+    subPlayer.style.display = "none";
+    d3.select("#cat-deck").classed("active", !isOpen);
+    d3.select("#cat-player").classed("active", false);
+  });
+
+  // Player Ranking hides sub-rows
+  d3.select("#btn-ranking").on("click", () => {
+    subPlayer.style.display = "none";
+    subDeck.style.display = "none";
+    d3.selectAll(".category-btn").classed("active", false);
+    switchView("ranking");
+  });
+
+  // Player sub-views
   d3.select("#btn-podium").on("click", () => switchView("podium"));
   d3.select("#btn-top3finishes").on("click", () => switchView("top3finishes"));
-  d3.select("#btn-deckpop").on("click", () => switchView("deckpop"));
   d3.select("#btn-winrate").on("click", () => switchView("winrate"));
   d3.select("#btn-attendance").on("click", () => switchView("attendance"));
-  d3.select("#btn-deckdiv").on("click", () => switchView("deckdiv"));
   d3.select("#btn-playerdrawrate").on("click", () => switchView("playerdrawrate"));
+
+  // Deck sub-views
+  d3.select("#btn-deckwins").on("click", () => switchView("deckwins"));
+  d3.select("#btn-deckpop").on("click", () => switchView("deckpop"));
+  d3.select("#btn-deckdiv").on("click", () => switchView("deckdiv"));
   d3.select("#btn-deckdrawrate").on("click", () => switchView("deckdrawrate"));
   d3.select("#btn-deckwinrate").on("click", () => switchView("deckwinrate"));
 
