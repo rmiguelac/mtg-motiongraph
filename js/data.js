@@ -340,5 +340,128 @@ export function processData(raw, monthFilter) {
   );
   deckDivData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
 
-  return { dates, playerData, deckData, podiumData, top3Data, deckPopData, winRateData, attendanceData, deckDivData };
+  // ─── Player draw rate data (cumulative draw %) ───
+  const pdrCumulative = {};
+  const pdrRunning = {};
+  allPlayers.forEach((p) => {
+    pdrCumulative[p] = [];
+    pdrRunning[p] = { w: 0, l: 0, d: 0 };
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      pdrRunning[row.name].w += row.wins;
+      pdrRunning[row.name].l += row.losses;
+      pdrRunning[row.name].d += row.draws;
+    });
+    allPlayers.forEach((p) => {
+      const { w, l, d: dr } = pdrRunning[p];
+      const games = w + l + dr;
+      pdrCumulative[p].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: games > 0 ? Math.round((dr / games) * 1000) / 10 : 0,
+        draws: dr,
+        games,
+      });
+    });
+  });
+
+  const playerDrawRateData = allPlayers.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: pdrCumulative[name],
+  }));
+
+  playerDrawRateData.sort((a, b) => {
+    const aLast = a.values[a.values.length - 1];
+    const bLast = b.values[b.values.length - 1];
+    return bLast.total - aLast.total || bLast.games - aLast.games;
+  });
+  playerDrawRateData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  // ─── Deck draw rate data (cumulative draw %) ───
+  const ddrCumulative = {};
+  const ddrRunning = {};
+  allDecks.forEach((dk) => {
+    ddrCumulative[dk] = [];
+    ddrRunning[dk] = { w: 0, l: 0, d: 0 };
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      ddrRunning[row.deck].w += row.wins;
+      ddrRunning[row.deck].l += row.losses;
+      ddrRunning[row.deck].d += row.draws;
+    });
+    allDecks.forEach((dk) => {
+      const { w, l, d: dr } = ddrRunning[dk];
+      const games = w + l + dr;
+      ddrCumulative[dk].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: games > 0 ? Math.round((dr / games) * 1000) / 10 : 0,
+        draws: dr,
+        games,
+      });
+    });
+  });
+
+  const deckDrawRateData = allDecks.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: ddrCumulative[name],
+  }));
+
+  deckDrawRateData.sort((a, b) => {
+    const aLast = a.values[a.values.length - 1];
+    const bLast = b.values[b.values.length - 1];
+    return bLast.total - aLast.total || bLast.games - aLast.games;
+  });
+  deckDrawRateData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  // ─── Deck win rate data (cumulative win %) ───
+  const dwrCumulative = {};
+  const dwrRunning = {};
+  allDecks.forEach((dk) => {
+    dwrCumulative[dk] = [];
+    dwrRunning[dk] = { w: 0, l: 0, d: 0 };
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      dwrRunning[row.deck].w += row.wins;
+      dwrRunning[row.deck].l += row.losses;
+      dwrRunning[row.deck].d += row.draws;
+    });
+    allDecks.forEach((dk) => {
+      const { w, l, d: dr } = dwrRunning[dk];
+      const games = w + l + dr;
+      dwrCumulative[dk].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: games > 0 ? Math.round((w / games) * 1000) / 10 : 0,
+        wins: w,
+        games,
+      });
+    });
+  });
+
+  const deckWinRateData = allDecks.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: dwrCumulative[name],
+  }));
+
+  deckWinRateData.sort((a, b) => {
+    const aLast = a.values[a.values.length - 1];
+    const bLast = b.values[b.values.length - 1];
+    return bLast.total - aLast.total || bLast.games - aLast.games;
+  });
+  deckWinRateData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  return { dates, playerData, deckData, podiumData, top3Data, deckPopData, winRateData, attendanceData, deckDivData, playerDrawRateData, deckDrawRateData, deckWinRateData };
 }

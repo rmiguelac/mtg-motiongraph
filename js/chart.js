@@ -166,6 +166,60 @@ export function buildChart({ raw, state }) {
       .slice(0, MAX_BARS);
   }
 
+  function getPlayerDrawRateSnapshot(idx) {
+    const { playerDrawRateData } = state.data;
+    const colorMap = {};
+    playerDrawRateData.forEach((d) => (colorMap[d.name] = d.color));
+    return playerDrawRateData
+      .map((d) => ({
+        name: d.name,
+        total: d.values[idx].total,
+        color: colorMap[d.name],
+        date: d.values[idx].date,
+        draws: d.values[idx].draws,
+        games: d.values[idx].games,
+      }))
+      .filter((d) => d.games > 0)
+      .sort((a, b) => b.total - a.total || b.games - a.games)
+      .slice(0, MAX_BARS);
+  }
+
+  function getDeckDrawRateSnapshot(idx) {
+    const { deckDrawRateData } = state.data;
+    const colorMap = {};
+    deckDrawRateData.forEach((d) => (colorMap[d.name] = d.color));
+    return deckDrawRateData
+      .map((d) => ({
+        name: d.name,
+        total: d.values[idx].total,
+        color: colorMap[d.name],
+        date: d.values[idx].date,
+        draws: d.values[idx].draws,
+        games: d.values[idx].games,
+      }))
+      .filter((d) => d.games > 0)
+      .sort((a, b) => b.total - a.total || b.games - a.games)
+      .slice(0, MAX_BARS);
+  }
+
+  function getDeckWinRateSnapshot(idx) {
+    const { deckWinRateData } = state.data;
+    const colorMap = {};
+    deckWinRateData.forEach((d) => (colorMap[d.name] = d.color));
+    return deckWinRateData
+      .map((d) => ({
+        name: d.name,
+        total: d.values[idx].total,
+        color: colorMap[d.name],
+        date: d.values[idx].date,
+        wins: d.values[idx].wins,
+        games: d.values[idx].games,
+      }))
+      .filter((d) => d.games > 0)
+      .sort((a, b) => b.total - a.total || b.games - a.games)
+      .slice(0, MAX_BARS);
+  }
+
   // ─── Render one frame ───
   function renderStep(step, dur) {
     if (step === 0) {
@@ -185,6 +239,9 @@ export function buildChart({ raw, state }) {
     else if (state.viewMode === "winrate") snapshot = getWinRateSnapshot(idx);
     else if (state.viewMode === "attendance") snapshot = getAttendanceSnapshot(idx);
     else if (state.viewMode === "deckdiv") snapshot = getDeckDivSnapshot(idx);
+    else if (state.viewMode === "playerdrawrate") snapshot = getPlayerDrawRateSnapshot(idx);
+    else if (state.viewMode === "deckdrawrate") snapshot = getDeckDrawRateSnapshot(idx);
+    else if (state.viewMode === "deckwinrate") snapshot = getDeckWinRateSnapshot(idx);
     else snapshot = getPlayerSnapshot(idx);
 
     // Filter for top3 mode (only applies to player ranking)
@@ -196,7 +253,8 @@ export function buildChart({ raw, state }) {
 
     // Update scales
     const maxVal = d3.max(visible, (d) => d.total) || 1;
-    const xMax = state.viewMode === "winrate" ? 100 : maxVal * 1.12;
+    const isPercentView = ["winrate", "playerdrawrate", "deckdrawrate", "deckwinrate"].includes(state.viewMode);
+    const xMax = isPercentView ? 100 : maxVal * 1.12;
     x.domain([0, xMax]);
     y.domain(names);
 
@@ -300,7 +358,11 @@ export function buildChart({ raw, state }) {
       .tween("text", function (d) {
         const prevText = (this.textContent.match(/[\d.]+/) || ["0"])[0];
         const prev = +prevText;
-        if (state.viewMode === "winrate") {
+        if (state.viewMode === "winrate" || state.viewMode === "deckwinrate") {
+          const interp = d3.interpolateNumber(prev, d.total);
+          return (t) => (this.textContent = interp(t).toFixed(1) + "%  (" + d.games + " games)");
+        }
+        if (state.viewMode === "playerdrawrate" || state.viewMode === "deckdrawrate") {
           const interp = d3.interpolateNumber(prev, d.total);
           return (t) => (this.textContent = interp(t).toFixed(1) + "%  (" + d.games + " games)");
         }
@@ -335,6 +397,18 @@ export function buildChart({ raw, state }) {
         } else if (state.viewMode === "deckdiv") {
           html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
           html += `<div>Unique decks used: <strong>${d.total}</strong></div>`;
+        } else if (state.viewMode === "playerdrawrate") {
+          html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>Draw rate: <strong>${d.total}%</strong></div>`;
+          html += `<div>${d.draws}D in ${d.games} games</div>`;
+        } else if (state.viewMode === "deckdrawrate") {
+          html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>Draw rate: <strong>${d.total}%</strong></div>`;
+          html += `<div>${d.draws}D in ${d.games} games</div>`;
+        } else if (state.viewMode === "deckwinrate") {
+          html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>Win rate: <strong>${d.total}%</strong></div>`;
+          html += `<div>${d.wins}W in ${d.games} games</div>`;
         } else {
           const tourneyRows = raw.filter(
             (r) => r.date === d.date && r.name === d.name
