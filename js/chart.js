@@ -24,7 +24,9 @@ export function buildChart({ raw, state }) {
     .attr("id", "deck-img-shadow-r")
     .attr("x1", "0").attr("y1", "0")
     .attr("x2", "1").attr("y2", "0");
-  shadowR.append("stop").attr("offset", "0%").attr("stop-color", "rgba(0,0,0,0.5)");
+  shadowR.append("stop").attr("offset", "0%").attr("stop-color", "rgba(0,0,0,0.7)");
+  shadowR.append("stop").attr("offset", "25%").attr("stop-color", "rgba(0,0,0,0.35)");
+  shadowR.append("stop").attr("offset", "60%").attr("stop-color", "rgba(0,0,0,0.1)");
   shadowR.append("stop").attr("offset", "100%").attr("stop-color", "rgba(0,0,0,0)");
 
   // ─── Scales ───
@@ -382,7 +384,7 @@ export function buildChart({ raw, state }) {
 
     const isDeckImg = (d) => {
       const theme = DECK_THEMES[d.name];
-      return theme && DECK_VIEWS.has(state.viewMode);
+      return theme && theme.image && DECK_VIEWS.has(state.viewMode);
     };
 
     merged.select("clipPath .clip-rect")
@@ -397,7 +399,7 @@ export function buildChart({ raw, state }) {
 
     merged.select(".deck-img-shadow-r")
       .attr("x", imgW).attr("y", 0)
-      .attr("width", imgW * 0.5).attr("height", bh)
+      .attr("width", imgW * 1.2).attr("height", bh)
       .style("display", (d) => isDeckImg(d) ? null : "none");
 
     merged
