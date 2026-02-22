@@ -1,6 +1,6 @@
 import {
   FULL_WIDTH, FULL_HEIGHT, WIDTH, HEIGHT, MARGIN,
-  MAX_BARS, BAR_PADDING,
+  MAX_BARS, BAR_PADDING, DECK_THEMES,
 } from "./config.js";
 
 /**
@@ -18,6 +18,15 @@ export function buildChart({ raw, state }) {
   const tooltip = d3.select("#tooltip");
   const dateDisplay = d3.select("#date-display");
 
+  // Shared defs for deck image shadow (cast onto bar from image right edge)
+  const defs = svg.append("defs");
+  const shadowR = defs.append("linearGradient")
+    .attr("id", "deck-img-shadow-r")
+    .attr("x1", "0").attr("y1", "0")
+    .attr("x2", "1").attr("y2", "0");
+  shadowR.append("stop").attr("offset", "0%").attr("stop-color", "rgba(0,0,0,0.5)");
+  shadowR.append("stop").attr("offset", "100%").attr("stop-color", "rgba(0,0,0,0)");
+
   // ─── Scales ───
   const x = d3.scaleLinear().range([0, WIDTH]);
   const y = d3.scaleBand().range([0, HEIGHT]).padding(BAR_PADDING);
@@ -33,6 +42,9 @@ export function buildChart({ raw, state }) {
 
   // Container for bars (below labels)
   const barG = svg.append("g").attr("class", "bars");
+
+  // Deck views that show deck images
+  const DECK_VIEWS = new Set(["deckwins", "deckpop", "deckdrawrate", "deckwinrate"]);
 
   // ─── Snapshot helpers (read live from state.data) ───
   function getPlayerSnapshot(idx) {
@@ -303,6 +315,24 @@ export function buildChart({ raw, state }) {
       .attr("fill", (d) => d.color)
       .attr("width", 0);
 
+    // Deck image with shadow cast onto bar
+    enter.each(function (d) {
+      const g = d3.select(this);
+      const clipId = `clip-${d.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
+      g.append("clipPath").attr("id", clipId)
+        .append("rect").attr("class", "clip-rect");
+      g.append("image")
+        .attr("class", "deck-img")
+        .attr("clip-path", `url(#${clipId})`)
+        .attr("preserveAspectRatio", "xMidYMid slice")
+        .style("pointer-events", "none");
+      // Shadow cast from image right edge onto bar
+      g.append("rect")
+        .attr("class", "deck-img-shadow-r")
+        .attr("fill", "url(#deck-img-shadow-r)")
+        .style("pointer-events", "none");
+    });
+
     enter
       .append("text")
       .attr("class", "bar-name")
@@ -341,7 +371,34 @@ export function buildChart({ raw, state }) {
       .ease(d3.easeLinear)
       .attr("width", (d) => Math.max(0, x(d.total)))
       .attr("height", y.bandwidth())
-      .attr("fill", (d) => d.color);
+      .attr("fill", (d) => {
+        const theme = DECK_THEMES[d.name];
+        return (theme && DECK_VIEWS.has(state.viewMode)) ? theme.barColor : d.color;
+      });
+
+    // Update deck image + right shadow
+    const bh = y.bandwidth();
+    const imgW = bh * 2;
+
+    const isDeckImg = (d) => {
+      const theme = DECK_THEMES[d.name];
+      return theme && DECK_VIEWS.has(state.viewMode);
+    };
+
+    merged.select("clipPath .clip-rect")
+      .attr("x", 0).attr("y", 0)
+      .attr("width", imgW).attr("height", bh);
+
+    merged.select(".deck-img")
+      .attr("href", (d) => isDeckImg(d) ? DECK_THEMES[d.name].image : null)
+      .attr("x", 0).attr("y", 0)
+      .attr("width", imgW).attr("height", bh)
+      .style("display", (d) => isDeckImg(d) ? null : "none");
+
+    merged.select(".deck-img-shadow-r")
+      .attr("x", imgW).attr("y", 0)
+      .attr("width", imgW * 0.5).attr("height", bh)
+      .style("display", (d) => isDeckImg(d) ? null : "none");
 
     merged
       .select(".bar-name")

@@ -15,6 +15,14 @@ export function parseLocalDate(str) {
   return new Date(y, m - 1, d);
 }
 
+// ─── Deck themes (image + bar color overrides for deck views) ───
+export const DECK_THEMES = {
+  "Elves": {
+    image: "images/decks/elves.png",
+    barColor: "#7ee787",
+  },
+};
+
 // ─── Color palette ───
 export const PALETTE = [
   "#58a6ff", "#f78166", "#56d364", "#d2a8ff", "#e3b341",
