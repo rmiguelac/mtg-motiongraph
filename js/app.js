@@ -8,10 +8,10 @@ const state = {
   currentStep: 0,
   hiddenPlayers: new Set(),
   top3Mode: false,
-  viewMode: "ranking",  // "ranking" | "deckwins"
+  viewMode: "ranking",  // "ranking" | "deckwins" | "podium" | "top3finishes"
   monthFilter: null,     // null = all months
   // Mutable processed data — updated when month filter changes
-  data: { dates: [], playerData: [], deckData: [] },
+  data: { dates: [], playerData: [], deckData: [], podiumData: [], top3Data: [] },
 };
 
 async function main() {

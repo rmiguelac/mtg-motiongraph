@@ -79,13 +79,15 @@ export function initAnimation({ chart, state, raw, months, processData }) {
   function switchView(mode) {
     state.viewMode = mode;
     d3.selectAll(".view-btn").classed("active", false);
-    d3.select(mode === "ranking" ? "#btn-ranking" : "#btn-deckwins").classed("active", true);
+    d3.select(`#btn-${mode}`).classed("active", true);
     reset();
     setTimeout(play, 300);
   }
 
   d3.select("#btn-ranking").on("click", () => switchView("ranking"));
   d3.select("#btn-deckwins").on("click", () => switchView("deckwins"));
+  d3.select("#btn-podium").on("click", () => switchView("podium"));
+  d3.select("#btn-top3finishes").on("click", () => switchView("top3finishes"));
 
   // ─── Month filter ───
   const monthSelect = d3.select("#month-filter");

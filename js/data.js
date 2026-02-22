@@ -118,5 +118,79 @@ export function processData(raw, monthFilter) {
   );
   deckData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
 
-  return { dates, playerData, deckData };
+  // ─── Podium (top-3 finishes) data ───
+  const podiumCumulative = {};
+  const podiumRunning = {};
+  allPlayers.forEach((p) => {
+    podiumCumulative[p] = [];
+    podiumRunning[p] = 0;
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      if (row.position === 1) {
+        podiumRunning[row.name] += 1;
+      }
+    });
+    allPlayers.forEach((p) => {
+      podiumCumulative[p].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: podiumRunning[p],
+      });
+    });
+  });
+
+  const podiumData = allPlayers.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: podiumCumulative[name],
+  }));
+
+  podiumData.sort(
+    (a, b) =>
+      b.values[b.values.length - 1].total -
+      a.values[a.values.length - 1].total
+  );
+  podiumData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  // ─── Top-3 finishes data ───
+  const top3Cumulative = {};
+  const top3Running = {};
+  allPlayers.forEach((p) => {
+    top3Cumulative[p] = [];
+    top3Running[p] = 0;
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      if (row.position <= 3) {
+        top3Running[row.name] += 1;
+      }
+    });
+    allPlayers.forEach((p) => {
+      top3Cumulative[p].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: top3Running[p],
+      });
+    });
+  });
+
+  const top3Data = allPlayers.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: top3Cumulative[name],
+  }));
+
+  top3Data.sort(
+    (a, b) =>
+      b.values[b.values.length - 1].total -
+      a.values[a.values.length - 1].total
+  );
+  top3Data.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  return { dates, playerData, deckData, podiumData, top3Data };
 }

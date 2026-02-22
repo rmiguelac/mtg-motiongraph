@@ -68,6 +68,38 @@ export function buildChart({ raw, state }) {
       .slice(0, MAX_BARS);
   }
 
+  function getPodiumSnapshot(idx) {
+    const { podiumData } = state.data;
+    const colorMap = {};
+    podiumData.forEach((d) => (colorMap[d.name] = d.color));
+    return podiumData
+      .map((d) => ({
+        name: d.name,
+        total: d.values[idx].total,
+        color: colorMap[d.name],
+        date: d.values[idx].date,
+      }))
+      .filter((d) => d.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, MAX_BARS);
+  }
+
+  function getTop3Snapshot(idx) {
+    const { top3Data } = state.data;
+    const colorMap = {};
+    top3Data.forEach((d) => (colorMap[d.name] = d.color));
+    return top3Data
+      .map((d) => ({
+        name: d.name,
+        total: d.values[idx].total,
+        color: colorMap[d.name],
+        date: d.values[idx].date,
+      }))
+      .filter((d) => d.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, MAX_BARS);
+  }
+
   // ─── Render one frame ───
   function renderStep(step, dur) {
     if (step === 0) {
@@ -79,10 +111,11 @@ export function buildChart({ raw, state }) {
     }
 
     const idx = Math.min(step - 1, state.data.dates.length - 1);
-    const snapshot =
-      state.viewMode === "deckwins"
-        ? getDeckSnapshot(idx)
-        : getPlayerSnapshot(idx);
+    let snapshot;
+    if (state.viewMode === "deckwins") snapshot = getDeckSnapshot(idx);
+    else if (state.viewMode === "podium") snapshot = getPodiumSnapshot(idx);
+    else if (state.viewMode === "top3finishes") snapshot = getTop3Snapshot(idx);
+    else snapshot = getPlayerSnapshot(idx);
 
     // Filter for top3 mode (only applies to player ranking)
     const visible =
@@ -207,6 +240,12 @@ export function buildChart({ raw, state }) {
         if (state.viewMode === "deckwins") {
           html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
           html += `<div>Cumulative wins: <strong>${d.total}</strong></div>`;
+        } else if (state.viewMode === "podium") {
+          html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>1st place finishes: <strong>${d.total}</strong></div>`;
+        } else if (state.viewMode === "top3finishes") {
+          html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
+          html += `<div>Top-3 finishes: <strong>${d.total}</strong></div>`;
         } else {
           const tourneyRows = raw.filter(
             (r) => r.date === d.date && r.name === d.name
