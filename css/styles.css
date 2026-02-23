@@ -242,3 +242,53 @@ svg text {
   fill: #e6edf3;
   pointer-events: none;
 }
+
+/* ─── Mobile responsive ─── */
+@media (max-width: 768px) {
+  body {
+    padding: 1rem 0.5rem;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .subtitle {
+    font-size: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .view-nav {
+    gap: 0.35rem;
+  }
+
+  .view-btn,
+  .category-btn {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .controls {
+    gap: 0.4rem;
+  }
+
+  .controls button {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.8rem;
+  }
+
+  #chart-container {
+    padding: 0.75rem 0.5rem;
+    border-radius: 8px;
+  }
+
+  .date-display {
+    position: relative;
+    top: auto;
+    right: auto;
+    text-align: center;
+    font-size: 1.1rem;
+    opacity: 0.7;
+    margin-bottom: 0.25rem;
+  }
+}
