@@ -48,6 +48,34 @@ export function buildChart({ raw, state }) {
   // Deck views that show deck images
   const DECK_VIEWS = new Set(["deckwins", "deckpop", "deckdrawrate", "deckwinrate"]);
 
+  // ─── Deck Count counter (centred SVG group, hidden by default) ───
+  const counterG = svg.append("g")
+    .attr("class", "deck-counter-group")
+    .attr("transform", `translate(${WIDTH / 2}, ${HEIGHT / 2})`)
+    .style("opacity", 0);
+
+  counterG.append("text")
+    .attr("class", "counter-number")
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "central")
+    .attr("dy", "-0.15em")
+    .attr("fill", "#c9a84c")
+    .attr("font-size", "8rem")
+    .attr("font-weight", "700")
+    .attr("font-family", "Cinzel, serif")
+    .text("0");
+
+  counterG.append("text")
+    .attr("class", "counter-label")
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "hanging")
+    .attr("dy", "3.5rem")
+    .attr("fill", "#8b949e")
+    .attr("font-size", "1.2rem")
+    .attr("font-weight", "600")
+    .attr("font-family", "Inter, sans-serif")
+    .text("different decks played");
+
   // ─── Snapshot helpers (read live from state.data) ───
   function getPlayerSnapshot(idx) {
     const { playerData } = state.data;
@@ -234,6 +262,13 @@ export function buildChart({ raw, state }) {
       .slice(0, MAX_BARS);
   }
 
+  // Helper: count all unique decks with data > 0 at given index
+  function countDecksAtStep(idx) {
+    const { deckPopData } = state.data;
+    if (!deckPopData) return 0;
+    return deckPopData.filter((d) => d.values[idx] && d.values[idx].total > 0).length;
+  }
+
   // ─── Render one frame ───
   function renderStep(step, dur) {
     if (step === 0) {
@@ -241,6 +276,7 @@ export function buildChart({ raw, state }) {
       x.domain([0, 1]);
       xAxisG.call(d3.axisBottom(x).ticks(5));
       gridG.selectAll("line").remove();
+      counterG.style("opacity", 0);
       return;
     }
 
@@ -256,7 +292,27 @@ export function buildChart({ raw, state }) {
     else if (state.viewMode === "playerdrawrate") snapshot = getPlayerDrawRateSnapshot(idx);
     else if (state.viewMode === "deckdrawrate") snapshot = getDeckDrawRateSnapshot(idx);
     else if (state.viewMode === "deckwinrate") snapshot = getDeckWinRateSnapshot(idx);
+    else if (state.viewMode === "deckcount") snapshot = [];
     else snapshot = getPlayerSnapshot(idx);
+
+    // Show / hide deck count counter view
+    if (state.viewMode === "deckcount") {
+      const totalDecks = countDecksAtStep(idx);
+      barG.selectAll("g").remove();
+      xAxisG.call(d3.axisBottom(x).ticks(0));
+      gridG.selectAll("line").remove();
+      counterG.select(".counter-number")
+        .transition().duration(dur).ease(d3.easeLinear)
+        .tween("text", function () {
+          const prev = +this.textContent || 0;
+          const interp = d3.interpolateRound(prev, totalDecks);
+          return (t) => { this.textContent = interp(t); };
+        });
+      counterG.transition().duration(300).style("opacity", 1);
+      return;
+    } else {
+      counterG.style("opacity", 0);
+    }
 
     // Filter for top3 mode (only applies to player ranking)
     const visible =
