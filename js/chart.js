@@ -48,33 +48,53 @@ export function buildChart({ raw, state }) {
   // Deck views that show deck images
   const DECK_VIEWS = new Set(["deckwins", "deckpop", "deckdrawrate", "deckwinrate"]);
 
-  // ─── Deck Count counter (centred SVG group, hidden by default) ───
-  const counterG = svg.append("g")
-    .attr("class", "deck-counter-group")
-    .attr("transform", `translate(${WIDTH / 2}, ${HEIGHT / 2})`)
+  // ─── Deck Count Grid ───
+  const CELL = 68;
+  const CELL_GAP = 8;
+  const CELL_STEP = CELL + CELL_GAP;
+  const GRID_COLS = 8;
+  const gridTotalW = GRID_COLS * CELL_STEP - CELL_GAP;
+  const SIDE_PANEL_W = 150;
+  const gridOffsetX = 10;
+  const gridOffsetY = 20;
+
+  // Shared rounded-rect clip (objectBoundingBox so one clip works for all cells)
+  defs.append("clipPath")
+    .attr("id", "grid-cell-clip")
+    .attr("clipPathUnits", "objectBoundingBox")
+    .append("rect")
+    .attr("width", 1).attr("height", 1)
+    .attr("rx", 0.09).attr("ry", 0.09);
+
+  const deckGridG = svg.append("g")
+    .attr("class", "deck-grid")
+    .attr("transform", `translate(${gridOffsetX}, ${gridOffsetY})`)
     .style("opacity", 0);
 
-  counterG.append("text")
-    .attr("class", "counter-number")
-    .attr("text-anchor", "middle")
-    .attr("dominant-baseline", "central")
-    .attr("dy", "-0.15em")
-    .attr("fill", "#c9a84c")
-    .attr("font-size", "8rem")
-    .attr("font-weight", "700")
-    .attr("font-family", "Cinzel, serif")
-    .text("0");
+  // Fixed counter on the right side
+  const sideCounterX = gridTotalW + 50 + SIDE_PANEL_W / 2;
+  const sideCounterY = HEIGHT / 2 - 20;
 
-  counterG.append("text")
-    .attr("class", "counter-label")
+  const gridCountNum = deckGridG.append("text")
+    .attr("class", "grid-count-num")
     .attr("text-anchor", "middle")
-    .attr("dominant-baseline", "hanging")
-    .attr("dy", "3.5rem")
+    .attr("x", sideCounterX)
+    .attr("y", sideCounterY)
+    .attr("fill", "#c9a84c")
+    .attr("font-size", "3.5rem")
+    .attr("font-weight", "700")
+    .attr("font-family", "Cinzel, serif");
+
+  const gridCountLabel = deckGridG.append("text")
+    .attr("class", "grid-count-label")
+    .attr("text-anchor", "middle")
+    .attr("x", sideCounterX)
+    .attr("y", sideCounterY + 36)
     .attr("fill", "#8b949e")
-    .attr("font-size", "1.2rem")
+    .attr("font-size", "0.85rem")
     .attr("font-weight", "600")
     .attr("font-family", "Inter, sans-serif")
-    .text("different decks played");
+    .text("different decks");
 
   // ─── Snapshot helpers (read live from state.data) ───
   function getPlayerSnapshot(idx) {
@@ -276,7 +296,8 @@ export function buildChart({ raw, state }) {
       x.domain([0, 1]);
       xAxisG.call(d3.axisBottom(x).ticks(5));
       gridG.selectAll("line").remove();
-      counterG.style("opacity", 0);
+      deckGridG.selectAll(".grid-cell").remove();
+      deckGridG.style("opacity", 0);
       return;
     }
 
@@ -295,23 +316,133 @@ export function buildChart({ raw, state }) {
     else if (state.viewMode === "deckcount") snapshot = [];
     else snapshot = getPlayerSnapshot(idx);
 
-    // Show / hide deck count counter view
+    // Show / hide deck count grid view
     if (state.viewMode === "deckcount") {
-      const totalDecks = countDecksAtStep(idx);
       barG.selectAll("g").remove();
-      xAxisG.call(d3.axisBottom(x).ticks(0));
+      xAxisG.selectAll("*").remove();
       gridG.selectAll("line").remove();
-      counterG.select(".counter-number")
-        .transition().duration(dur).ease(d3.easeLinear)
-        .tween("text", function () {
-          const prev = +this.textContent || 0;
-          const interp = d3.interpolateRound(prev, totalDecks);
-          return (t) => { this.textContent = interp(t); };
+      deckGridG.style("opacity", 1);
+
+      // Compute which decks are visible, sorted by first-appearance order
+      const { deckPopData } = state.data;
+      const decksAtStep = deckPopData
+        .map((d) => ({
+          name: d.name,
+          firstIdx: d.values.findIndex((v) => v.total > 0),
+        }))
+        .filter((d) => d.firstIdx !== -1 && d.firstIdx <= idx)
+        .sort((a, b) => a.firstIdx - b.firstIdx);
+
+      // Assign grid positions
+      decksAtStep.forEach((d, i) => {
+        d.col = i % GRID_COLS;
+        d.row = Math.floor(i / GRID_COLS);
+        d.gx = d.col * CELL_STEP;
+        d.gy = d.row * CELL_STEP;
+      });
+
+      // Data join keyed by deck name
+      const cells = deckGridG.selectAll(".grid-cell")
+        .data(decksAtStep, (d) => d.name);
+
+      // EXIT (shouldn't happen — cumulative data)
+      cells.exit().remove();
+
+      // ENTER — new decks pop in
+      const enter = cells.enter().append("g")
+        .attr("class", "grid-cell")
+        .style("opacity", 0);
+
+      // Outer group positioned at cell centre for scale-from-centre animation
+      enter.attr("transform", (d) =>
+        `translate(${d.gx + CELL / 2}, ${d.gy + CELL / 2}) scale(0.01)`);
+
+      // Inner group offsets content so (0,0)→(CELL,CELL) is centred
+      const inner = enter.append("g")
+        .attr("transform", `translate(${-CELL / 2}, ${-CELL / 2})`);
+
+      // Background (fallback colour for no-image decks)
+      inner.append("rect")
+        .attr("width", CELL).attr("height", CELL)
+        .attr("rx", 6).attr("ry", 6)
+        .attr("fill", (d) => {
+          const t = DECK_THEMES[d.name];
+          return t ? t.color : "#30363d";
         });
-      counterG.transition().duration(300).style("opacity", 1);
+
+      // Deck image (if available)
+      inner.each(function (d) {
+        const theme = DECK_THEMES[d.name];
+        if (theme && theme.image) {
+          d3.select(this).append("image")
+            .attr("href", theme.image)
+            .attr("width", CELL).attr("height", CELL)
+            .attr("preserveAspectRatio", "xMidYMid slice")
+            .attr("clip-path", "url(#grid-cell-clip)");
+        } else {
+          // Show first letter for decks with no image
+          d3.select(this).append("text")
+            .attr("x", CELL / 2).attr("y", CELL / 2)
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "central")
+            .attr("fill", "#fff")
+            .attr("font-size", "1.6rem")
+            .attr("font-weight", "700")
+            .attr("font-family", "Inter, sans-serif")
+            .attr("opacity", 0.7)
+            .text(d.name.charAt(0));
+        }
+      });
+
+      // Border
+      inner.append("rect")
+        .attr("width", CELL).attr("height", CELL)
+        .attr("rx", 6).attr("ry", 6)
+        .attr("fill", "none")
+        .attr("stroke", "#484f58")
+        .attr("stroke-width", 1.5);
+
+      // Deck name label at bottom of cell
+      inner.append("text")
+        .attr("x", CELL / 2).attr("y", CELL - 5)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#fff")
+        .attr("font-size", "0.42rem")
+        .attr("font-weight", "600")
+        .attr("font-family", "Inter, sans-serif")
+        .attr("stroke", "#000")
+        .attr("stroke-width", 2.5)
+        .attr("paint-order", "stroke")
+        .text((d) => d.name);
+
+      // Pop-in animation (scale from centre + fade)
+      enter.transition().duration(400).ease(d3.easeBackOut.overshoot(1.7))
+        .attr("transform", (d) =>
+          `translate(${d.gx + CELL / 2}, ${d.gy + CELL / 2}) scale(1)`)
+        .style("opacity", 1);
+
+      // UPDATE — existing cells keep their position (stable order)
+      cells.attr("transform", (d) =>
+        `translate(${d.gx + CELL / 2}, ${d.gy + CELL / 2}) scale(1)`);
+
+      // Tooltip on hover
+      enter.on("mouseover", (event, d) => {
+        const theme = DECK_THEMES[d.name];
+        let html = `<div class="name" style="color:${theme ? theme.color : '#e6edf3'}">${d.name}</div>`;
+        tooltip.html(html)
+          .style("opacity", 1)
+          .style("left", event.offsetX + 15 + "px")
+          .style("top", event.offsetY - 10 + "px");
+      })
+      .on("mouseout", () => tooltip.style("opacity", 0));
+
+      // Update counter number (fixed position on the right)
+      gridCountNum.text(decksAtStep.length);
+
       return;
     } else {
-      counterG.style("opacity", 0);
+      deckGridG.selectAll(".grid-cell").remove();
+      deckGridG.style("opacity", 0);
     }
 
     // Filter for top3 mode (only applies to player ranking)

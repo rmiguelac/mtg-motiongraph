@@ -117,8 +117,8 @@ export const DECK_THEMES = {
     image: "images/decks/frognitorakdos.png",
     barColor: "#a06830",
   },
-  "Pestilence Cat": {
-    image: "images/decks/pestilencecat.png",
+  "Pestilence Cats": {
+    image: "images/decks/pestilencecats.png",
     barColor: "#505050",
   },
   "Flicker Tron": {
@@ -170,8 +170,20 @@ export const DECK_THEMES = {
     barColor: "#b8843c",
   },
   "Izzet Dragons": {
-    image: null,
+    image: "images/decks/izzetdragons.png",
     barColor: "#c06040",
+  },
+  "Jeskai Control Skred": {
+    image: "images/decks/jeskaicontrolskred.png",
+    barColor: "#d0a0a0",
+  },
+  "Simic Landfall": {
+    image: "images/decks/simiclandfall.png",
+    barColor: "#48a878",
+  },
+  "Walls combo": {
+    image: "images/decks/wallscombo.png",
+    barColor: "#60a050",
   },
 };
 
