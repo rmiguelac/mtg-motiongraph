@@ -1,4 +1,4 @@
-## Getting images from new decs
+## Getting images for new decks
 
 To get images for decks, these are the steps, always choosing the old frame when possible:
 
