@@ -1,0 +1,361 @@
+/* ─── Recap Overlay ─── */
+.recap-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.recap-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ─── Recap Modal ─── */
+.recap-modal {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 480px;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+/* ─── Header ─── */
+.recap-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid #21262d;
+}
+
+.recap-header select {
+  flex: 1;
+  background: #161b22;
+  color: #e6edf3;
+  border: 1px solid #30363d;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: "Inter", sans-serif;
+}
+
+.recap-close {
+  background: none !important;
+  border: none !important;
+  color: #8b949e;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.recap-close:hover {
+  color: #e6edf3;
+  background: #21262d !important;
+}
+
+/* ─── Slide container ─── */
+.recap-slide-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  min-height: 360px;
+}
+
+#recap-slide-container {
+  width: 100%;
+  text-align: center;
+  transition: opacity 0.2s ease, transform 0.3s ease;
+}
+
+#recap-slide-container.recap-slide-exit {
+  opacity: 0;
+  transform: translateX(-20px);
+}
+
+#recap-slide-container.recap-slide-enter {
+  animation: slideIn 0.4s ease forwards;
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── Footer (nav) ─── */
+.recap-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid #21262d;
+}
+
+.recap-nav-btn {
+  background: #21262d !important;
+  border: 1px solid #30363d !important;
+  color: #e6edf3;
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem !important;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.recap-nav-btn:hover:not(:disabled) {
+  background: #30363d !important;
+  border-color: #8b949e !important;
+}
+
+.recap-nav-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.recap-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.recap-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #30363d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.recap-dot.active {
+  background: #c9a84c;
+  transform: scale(1.3);
+}
+
+/* ─── Slide content styles ─── */
+.recap-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.recap-emoji {
+  font-size: 3rem;
+  margin-bottom: 0.25rem;
+}
+
+.recap-title {
+  font-family: "Cinzel", serif;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #c9a84c, #f5d98e, #c9a84c);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.05em;
+}
+
+.recap-player-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #e6edf3;
+}
+
+.recap-subtitle {
+  color: #8b949e;
+  font-size: 0.85rem;
+}
+
+.recap-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #8b949e;
+  font-weight: 600;
+}
+
+.recap-stat-big {
+  font-family: "Cinzel", serif;
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #c9a84c;
+  line-height: 1;
+}
+
+.recap-stat-line {
+  color: #e6edf3;
+  font-size: 0.95rem;
+}
+
+.recap-stat-extra {
+  color: #8b949e;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+}
+
+/* ─── Signature deck image ─── */
+.recap-deck-img-wrap {
+  width: 200px;
+  height: 200px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid #30363d;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.recap-deck-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.recap-deck-placeholder {
+  width: 200px;
+  height: 200px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  font-weight: 700;
+  color: #fff;
+  border: 2px solid #30363d;
+}
+
+.recap-deck-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-family: "Cinzel", serif;
+}
+
+/* ─── All decks grid ─── */
+.recap-deck-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 0.75rem;
+  max-width: 380px;
+}
+
+.recap-deck-card {
+  width: 68px;
+  text-align: center;
+}
+
+.recap-deck-card-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1.5px solid #484f58;
+}
+
+.recap-deck-card-fallback {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 auto;
+}
+
+.recap-deck-card-name {
+  font-size: 0.45rem;
+  color: #8b949e;
+  margin-top: 2px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recap-deck-card-count {
+  font-size: 0.65rem;
+  color: #c9a84c;
+  font-weight: 700;
+}
+
+/* ─── Record slide ─── */
+.recap-record-row {
+  display: flex;
+  gap: 2rem;
+  margin: 0.5rem 0;
+}
+
+.recap-record-item {
+  text-align: center;
+}
+
+.recap-record-num {
+  font-size: 2.4rem;
+  font-weight: 700;
+  font-family: "Cinzel", serif;
+  line-height: 1;
+}
+
+.recap-record-lbl {
+  font-size: 0.75rem;
+  color: #8b949e;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.recap-record-item.win .recap-record-num { color: #56d364; }
+.recap-record-item.loss .recap-record-num { color: #f78166; }
+.recap-record-item.draw .recap-record-num { color: #8b949e; }
+
+.recap-winrate {
+  margin-top: 0.75rem;
+}
+
+.recap-ring {
+  width: 120px;
+  height: 120px;
+}
+
+.recap-ring-fill {
+  transition: stroke-dashoffset 1s ease;
+}
+
+/* ─── Hidden trigger (⚔ in title) ─── */
+#recap-trigger {
+  cursor: pointer;
+  -webkit-text-fill-color: inherit;
+  background: inherit;
+  -webkit-background-clip: inherit;
+  transition: filter 0.2s ease;
+  user-select: none;
+}
+
+#recap-trigger:hover {
+  filter: brightness(1.4);
+}
+
+/* ─── Empty state ─── */
+.recap-empty {
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

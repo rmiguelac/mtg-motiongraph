@@ -1,6 +1,7 @@
 import { loadData, processData } from "./data.js";
 import { buildChart } from "./chart.js";
 import { initAnimation } from "./animation.js";
+import { initRecap } from "./recap.js";
 
 // Shared mutable state
 const state = {
@@ -22,6 +23,7 @@ async function main() {
 
   const chart = buildChart({ raw, state });
   initAnimation({ chart, state, raw, months, processData });
+  initRecap(raw);
 }
 
 main();
