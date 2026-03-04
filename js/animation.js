@@ -26,7 +26,7 @@ export function initAnimation({ chart, state, raw, months, processData }) {
     const [y, m, d] = dates[state.currentStep - 1].split(".").map(Number);
     const dt = new Date(y, m - 1, d);
     dateDisplay.text(
-      dt.toLocaleDateString("pt-BR", {
+      dt.toLocaleDateString("en-US", {
         day: "2-digit",
         month: "long",
         year: "numeric",

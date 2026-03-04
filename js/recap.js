@@ -74,11 +74,11 @@ function computeStats(raw, playerName) {
 // ─── Slide registry (modular — just push new functions) ───
 const slides = [];
 
-// Helper: format date string "2026.01.05" → "5 de janeiro, 2026"
+// Helper: format date string "2026.01.05" → "January 5, 2026"
 function fmtDate(str) {
   const [y, m, d] = str.split(".").map(Number);
   const dt = new Date(y, m - 1, d);
-  return dt.toLocaleDateString("pt-BR", { day: "numeric", month: "long", year: "numeric" });
+  return dt.toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" });
 }
 
 // ── Slide 0: Intro ──
