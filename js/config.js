@@ -185,6 +185,10 @@ export const DECK_THEMES = {
     image: "images/decks/wallscombo.png",
     barColor: "#60a050",
   },
+  "Glint Blade": {
+    image: "images/decks/glintblade.png",
+    barColor: "#e8d8b0",
+  },
 };
 
 // ─── Color palette ───
