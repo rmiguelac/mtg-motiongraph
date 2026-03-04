@@ -85,7 +85,7 @@ function fmtDate(str) {
 slides.push((stats, el) => {
   el.innerHTML = `
     <div class="recap-slide recap-intro">
-      <div class="recap-emoji">⚔</div>
+      <div class="recap-emoji"><img src="images/favicon.svg" alt="cathedral" style="height:1.5em;" /></div>
       <h2 class="recap-title">Player Recap</h2>
       <div class="recap-player-name">${stats.name}</div>
       <div class="recap-subtitle">${stats.tournamentsPlayed} tournaments · ${stats.totalGames} games</div>

@@ -1,0 +1,55 @@
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="domeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe066"/>
+      <stop offset="40%" stop-color="#ffcc33"/>
+      <stop offset="100%" stop-color="#d4880a"/>
+    </linearGradient>
+    <linearGradient id="baseGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f0ebe0"/>
+      <stop offset="100%" stop-color="#d6cfc0"/>
+    </linearGradient>
+    <linearGradient id="lanternGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffe680"/>
+      <stop offset="100%" stop-color="#e0a020"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Cross on top -->
+  <rect x="31" y="2" width="2" height="7" rx="0.5" fill="#d4880a"/>
+  <rect x="29" y="4" width="6" height="2" rx="0.5" fill="#d4880a"/>
+
+  <!-- Sphere under cross -->
+  <circle cx="32" cy="11" r="2.5" fill="url(#lanternGrad)" stroke="#c89010" stroke-width="0.5"/>
+
+  <!-- Lantern / cupola -->
+  <path d="M27 18 Q27 13 32 12 Q37 13 37 18 Z" fill="url(#lanternGrad)" stroke="#c89010" stroke-width="0.5"/>
+  <rect x="27" y="18" width="10" height="3" rx="0.5" fill="#d4980a" stroke="#c89010" stroke-width="0.4"/>
+
+  <!-- Main dome -->
+  <path d="M12 42 Q12 20 32 18 Q52 20 52 42 Z" fill="url(#domeGrad)" stroke="#c89010" stroke-width="1"/>
+
+  <!-- Dome ribs (decorative lines) -->
+  <line x1="32" y1="18" x2="32" y2="42" stroke="#c89010" stroke-width="0.4" opacity="0.5"/>
+  <line x1="32" y1="18" x2="22" y2="41" stroke="#c89010" stroke-width="0.3" opacity="0.4"/>
+  <line x1="32" y1="18" x2="42" y2="41" stroke="#c89010" stroke-width="0.3" opacity="0.4"/>
+
+  <!-- Small dormers on dome -->
+  <rect x="18" y="33" width="4" height="4" rx="1.5" fill="#e0a820" stroke="#c89010" stroke-width="0.4"/>
+  <rect x="42" y="33" width="4" height="4" rx="1.5" fill="#e0a820" stroke="#c89010" stroke-width="0.4"/>
+
+  <!-- Dome base ledge -->
+  <rect x="10" y="42" width="44" height="3" rx="0.5" fill="#d6cfc0" stroke="#bbb5a5" stroke-width="0.5"/>
+
+  <!-- Building base with arched windows -->
+  <rect x="8" y="45" width="48" height="14" fill="url(#baseGrad)" stroke="#bbb5a5" stroke-width="0.5"/>
+
+  <!-- Arched windows -->
+  <path d="M15 53 L15 48 A3 3 0 0 1 21 48 L21 53 Z" fill="#3a4a6a" stroke="#bbb5a5" stroke-width="0.4"/>
+  <path d="M24 53 L24 48 A3 3 0 0 1 30 48 L30 53 Z" fill="#3a4a6a" stroke="#bbb5a5" stroke-width="0.4"/>
+  <path d="M34 53 L34 48 A3 3 0 0 1 40 48 L40 53 Z" fill="#3a4a6a" stroke="#bbb5a5" stroke-width="0.4"/>
+  <path d="M43 53 L43 48 A3 3 0 0 1 49 48 L49 53 Z" fill="#3a4a6a" stroke="#bbb5a5" stroke-width="0.4"/>
+
+  <!-- Foundation -->
+  <rect x="6" y="59" width="52" height="3" rx="0.5" fill="#c8c0b0" stroke="#b0a898" stroke-width="0.5"/>
+</svg>
