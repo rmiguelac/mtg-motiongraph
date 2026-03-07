@@ -463,5 +463,51 @@ export function processData(raw, monthFilter) {
   });
   deckWinRateData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
 
-  return { dates, playerData, deckData, podiumData, top3Data, deckPopData, winRateData, attendanceData, deckDivData, playerDrawRateData, deckDrawRateData, deckWinRateData };
+  // ─── Deck Dedication data (most games with the same deck per player) ───
+  // Each entry is a player–deck pair; the "total" is how many events that
+  // player registered with that deck cumulatively over time.
+  const allPairs = new Set();
+  filtered.forEach((row) => allPairs.add(`${row.name}|||${row.deck}`));
+
+  const dedCumulative = {};
+  const dedRunning = {};
+  allPairs.forEach((key) => {
+    dedCumulative[key] = [];
+    dedRunning[key] = 0;
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      const key = `${row.name}|||${row.deck}`;
+      dedRunning[key] += 1;
+    });
+    allPairs.forEach((key) => {
+      dedCumulative[key].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: dedRunning[key],
+      });
+    });
+  });
+
+  const deckDedicationData = [...allPairs].map((key, i) => {
+    const [playerName, deckName] = key.split("|||");
+    return {
+      name: key,
+      playerName,
+      deckName,
+      color: PALETTE[i % PALETTE.length],
+      values: dedCumulative[key],
+    };
+  });
+
+  deckDedicationData.sort(
+    (a, b) =>
+      b.values[b.values.length - 1].total -
+      a.values[a.values.length - 1].total
+  );
+  deckDedicationData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  return { dates, playerData, deckData, podiumData, top3Data, deckPopData, winRateData, attendanceData, deckDivData, playerDrawRateData, deckDrawRateData, deckWinRateData, deckDedicationData };
 }

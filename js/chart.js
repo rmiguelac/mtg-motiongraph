@@ -46,7 +46,7 @@ export function buildChart({ raw, state }) {
   const barG = svg.append("g").attr("class", "bars");
 
   // Deck views that show deck images
-  const DECK_VIEWS = new Set(["deckwins", "deckpop", "deckdrawrate", "deckwinrate"]);
+  const DECK_VIEWS = new Set(["deckwins", "deckpop", "deckdrawrate", "deckwinrate", "deckdedication"]);
 
   // ─── Deck Count Grid ───
   const CELL = 68;
@@ -282,6 +282,25 @@ export function buildChart({ raw, state }) {
       .slice(0, MAX_BARS);
   }
 
+  function getDeckDedicationSnapshot(idx) {
+    const { deckDedicationData } = state.data;
+    if (!deckDedicationData) return [];
+    const colorMap = {};
+    deckDedicationData.forEach((d) => (colorMap[d.name] = d.color));
+    return deckDedicationData
+      .map((d) => ({
+        name: d.name,
+        playerName: d.playerName,
+        deckName: d.deckName,
+        total: d.values[idx].total,
+        color: colorMap[d.name],
+        date: d.values[idx].date,
+      }))
+      .filter((d) => d.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, MAX_BARS);
+  }
+
   // Helper: count all unique decks with data > 0 at given index
   function countDecksAtStep(idx) {
     const { deckPopData } = state.data;
@@ -313,6 +332,7 @@ export function buildChart({ raw, state }) {
     else if (state.viewMode === "playerdrawrate") snapshot = getPlayerDrawRateSnapshot(idx);
     else if (state.viewMode === "deckdrawrate") snapshot = getDeckDrawRateSnapshot(idx);
     else if (state.viewMode === "deckwinrate") snapshot = getDeckWinRateSnapshot(idx);
+    else if (state.viewMode === "deckdedication") snapshot = getDeckDedicationSnapshot(idx);
     else if (state.viewMode === "deckcount") snapshot = [];
     else snapshot = getPlayerSnapshot(idx);
 
@@ -561,6 +581,10 @@ export function buildChart({ raw, state }) {
       .attr("width", (d) => Math.max(0, x(d.total)))
       .attr("height", y.bandwidth())
       .attr("fill", (d) => {
+        if (state.viewMode === "deckdedication") {
+          const theme = DECK_THEMES[d.deckName];
+          return theme ? theme.barColor : d.color;
+        }
         const theme = DECK_THEMES[d.name];
         return (theme && DECK_VIEWS.has(state.viewMode)) ? theme.barColor : d.color;
       });
@@ -570,6 +594,10 @@ export function buildChart({ raw, state }) {
     const imgW = bh * 2;
 
     const isDeckImg = (d) => {
+      if (state.viewMode === "deckdedication") {
+        const theme = DECK_THEMES[d.deckName];
+        return !!(theme && theme.image);
+      }
       const theme = DECK_THEMES[d.name];
       return theme && theme.image && DECK_VIEWS.has(state.viewMode);
     };
@@ -579,7 +607,11 @@ export function buildChart({ raw, state }) {
       .attr("width", imgW).attr("height", bh);
 
     merged.select(".deck-img")
-      .attr("href", (d) => isDeckImg(d) ? DECK_THEMES[d.name].image : null)
+      .attr("href", (d) => {
+        if (!isDeckImg(d)) return null;
+        if (state.viewMode === "deckdedication") return DECK_THEMES[d.deckName].image;
+        return DECK_THEMES[d.name].image;
+      })
       .attr("x", 0).attr("y", 0)
       .attr("width", imgW).attr("height", bh)
       .style("display", (d) => isDeckImg(d) ? null : "none");
@@ -591,7 +623,7 @@ export function buildChart({ raw, state }) {
 
     merged
       .select(".bar-name")
-      .text((d) => d.name)
+      .text((d) => state.viewMode === "deckdedication" ? d.playerName : d.name)
       .attr("y", y.bandwidth() / 2);
 
     merged
@@ -611,6 +643,10 @@ export function buildChart({ raw, state }) {
         if (state.viewMode === "playerdrawrate" || state.viewMode === "deckdrawrate") {
           const interp = d3.interpolateNumber(prev, d.total);
           return (t) => (this.textContent = interp(t).toFixed(1) + "%  (" + d.games + " games)");
+        }
+        if (state.viewMode === "deckdedication") {
+          const interp = d3.interpolateRound(prev, d.total);
+          return (t) => (this.textContent = interp(t) + "× " + d.deckName);
         }
         const interp = d3.interpolateRound(prev, d.total);
         return (t) => (this.textContent = interp(t));
@@ -655,6 +691,10 @@ export function buildChart({ raw, state }) {
           html = `<div class="name" style="color:${d.color}">${d.name}</div>`;
           html += `<div>Win rate: <strong>${d.total}%</strong></div>`;
           html += `<div>${d.wins}W in ${d.games} games</div>`;
+        } else if (state.viewMode === "deckdedication") {
+          html = `<div class="name" style="color:${d.color}">${d.playerName}</div>`;
+          html += `<div>Deck: <strong>${d.deckName}</strong></div>`;
+          html += `<div>Times played: <strong>${d.total}</strong></div>`;
         } else {
           const tourneyRows = raw.filter(
             (r) => r.date === d.date && r.name === d.name

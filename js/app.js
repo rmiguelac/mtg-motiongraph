@@ -12,7 +12,7 @@ const state = {
   viewMode: "ranking",  // ... | "deckwinrate"
   monthFilter: null,     // null = all months
   // Mutable processed data — updated when month filter changes
-  data: { dates: [], playerData: [], deckData: [], podiumData: [], top3Data: [], deckPopData: [], winRateData: [], attendanceData: [], deckDivData: [], playerDrawRateData: [], deckDrawRateData: [], deckWinRateData: [] },
+  data: { dates: [], playerData: [], deckData: [], podiumData: [], top3Data: [], deckPopData: [], winRateData: [], attendanceData: [], deckDivData: [], playerDrawRateData: [], deckDrawRateData: [], deckWinRateData: [], deckDedicationData: [] },
 };
 
 async function main() {
