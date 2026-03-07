@@ -158,11 +158,6 @@ export function initAnimation({ chart, state, raw, months, processData }) {
     setTimeout(play, 300);
   });
 
-  // Remove "new-glow" badges after their expiry month
-  if (new Date() > new Date(2026, 2, 31)) { // after March 31 2026
-    document.querySelectorAll(".new-glow").forEach((el) => el.classList.remove("new-glow"));
-  }
-
   // Auto-play on load
   setTimeout(play, 600);
 }
