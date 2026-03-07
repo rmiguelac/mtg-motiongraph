@@ -189,6 +189,34 @@ export const DECK_THEMES = {
     image: "images/decks/glintblade.png",
     barColor: "#e8d8b0",
   },
+  "Magmakin Combo": {
+    image: "images/decks/magmakincombo.png",
+    barColor: "#d94030",
+  },
+  "Grixis Affininjas": {
+    image: "images/decks/grixisaffininjas.png",
+    barColor: "#6a4080",
+  },
+  "Bant Caw Gates": {
+    image: "images/decks/bantcawgates.png",
+    barColor: "#90c8a0",
+  },
+  "Monstron": {
+    image: "images/decks/monstron.png",
+    barColor: "#a0a0b8",
+  },
+  "Esper Acid Blade": {
+    image: "images/decks/esperacidblade.png",
+    barColor: "#6888b0",
+  },
+  "Serpentine Curve": {
+    image: "images/decks/serpentinecurve.png",
+    barColor: "#4090c0",
+  },
+  "Simic Ponza": {
+    image: "images/decks/simicponza.png",
+    barColor: "#58a868",
+  },
 };
 
 // ─── Color palette ───
