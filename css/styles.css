@@ -89,6 +89,56 @@ h1 {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* ─── "NEW" glow badge for fresh views ─── */
+.view-btn.new-glow {
+  position: relative;
+  border-color: #d2a8ff;
+  color: #d2a8ff;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.view-btn.new-glow::after {
+  content: "NEW";
+  position: absolute;
+  top: -7px;
+  right: -10px;
+  background: linear-gradient(135deg, #d2a8ff, #a371f7);
+  color: #0d1117;
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  animation: badgeBounce 2s ease-in-out infinite;
+}
+
+.view-btn.new-glow:hover {
+  background: rgba(210, 168, 255, 0.15);
+}
+
+.view-btn.new-glow.active {
+  background: #d2a8ff;
+  color: #0d1117;
+  border-color: #d2a8ff;
+  animation: none;
+}
+
+.view-btn.new-glow.active::after {
+  background: #0d1117;
+  color: #d2a8ff;
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 4px rgba(210, 168, 255, 0.3); }
+  50%      { box-shadow: 0 0 14px rgba(210, 168, 255, 0.6), 0 0 30px rgba(163, 113, 247, 0.2); }
+}
+
+@keyframes badgeBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+
 /* ─── Controls ─── */
 .controls {
   display: flex;
