@@ -5,6 +5,7 @@ export function initAnimation({ chart, state, raw, months, processData }) {
   const { dateDisplay, renderStep } = chart;
 
   let animTimer = null;
+  let onAnimationEnd = null;  // callback when animation finishes
 
   function getDates() {
     return state.data.dates;
@@ -41,7 +42,10 @@ export function initAnimation({ chart, state, raw, months, processData }) {
     animTimer = setInterval(() => {
       state.currentStep++;
       setStep(state.currentStep);
-      if (state.currentStep >= getDates().length) stop();
+      if (state.currentStep >= getDates().length) {
+        stop();
+        if (onAnimationEnd) onAnimationEnd();
+      }
     }, state.speed);
     // Kick off immediately
     state.currentStep++;
@@ -160,4 +164,20 @@ export function initAnimation({ chart, state, raw, months, processData }) {
 
   // Auto-play on load
   setTimeout(play, 600);
+
+  // Return controls for external modules (slide mode)
+  return {
+    play,
+    stop,
+    reset,
+    switchView,
+    setOnAnimationEnd(cb) { onAnimationEnd = cb; },
+    setSpeed(speed) {
+      state.speed = speed;
+      // Sync the main speed buttons too
+      d3.selectAll(".speed-btn").classed("active", false);
+      d3.selectAll(`.speed-btn[data-speed="${speed}"]`).classed("active", true);
+      if (animTimer) { stop(); play(); }
+    },
+  };
 }

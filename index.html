@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Cinzel:wght@700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/recap.css" />
+  <link rel="stylesheet" href="css/slidemode.css" />
 </head>
 <body>
   <h1><span id="recap-trigger"><img src="images/favicon.svg" alt="cathedral" style="height:0.9em;vertical-align:-0.05em;" /></span> Sanca Pauper League</h1>
@@ -64,9 +65,33 @@
     <select id="month-filter">
       <option value="">All</option>
     </select>
+    <span class="speed-label">│</span>
+    <button id="btn-slidemode">📺 Slide Mode</button>
   </div>
 
   <div class="legend" id="legend"></div>
+
+  <!-- Slide mode overlay -->
+  <div class="slide-overlay" id="slide-overlay">
+    <div class="slide-header">
+      <div class="slide-title">Sanca Pauper League</div>
+      <div class="slide-label" id="slide-label"></div>
+    </div>
+    <div class="slide-chart-wrap" id="slide-chart-wrap"></div>
+    <div class="slide-controls">
+      <button class="slide-nav-btn" id="slide-prev">◀</button>
+      <button class="slide-nav-btn" id="slide-pause">⏸</button>
+      <button class="slide-nav-btn" id="slide-next">▶</button>
+      <div class="slide-dots" id="slide-dots"></div>
+      <div class="slide-speed">
+        <span class="slide-speed-label">Speed:</span>
+        <button class="slide-speed-btn" data-speed="2000">Slow</button>
+        <button class="slide-speed-btn active" data-speed="1000">Normal</button>
+        <button class="slide-speed-btn" data-speed="400">Fast</button>
+      </div>
+      <button class="slide-nav-btn slide-exit-btn" id="slide-exit">✕ Exit</button>
+    </div>
+  </div>
 
   <!-- Recap overlay -->
   <div class="recap-overlay" id="recap-overlay">
