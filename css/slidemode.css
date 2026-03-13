@@ -213,19 +213,10 @@ body.slide-active > .legend {
 
   .slide-chart-wrap {
     padding: 0 0.25rem;
-    align-items: flex-start;
   }
 
   .slide-chart-wrap #chart-container {
     padding: 0.25rem;
-  }
-
-  /* Rotate the SVG chart to use the screen height as width */
-  .slide-chart-wrap #chart {
-    transform: rotate(90deg);
-    transform-origin: center center;
-    width: 85vh;
-    height: 85vw;
   }
 
   .slide-chart-wrap .date-display {
@@ -268,9 +259,9 @@ body.slide-active > .legend {
 }
 
 /* ─── Mobile Landscape ─── */
-@media (max-height: 500px) and (orientation: landscape) {
+@media (max-height: 500px) {
   .slide-header {
-    padding: 0.2rem 1rem 0;
+    padding: 0.15rem 1rem 0;
     flex-direction: row;
     gap: 0.75rem;
     justify-content: center;
@@ -281,7 +272,7 @@ body.slide-active > .legend {
   }
 
   .slide-label {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .slide-chart-wrap {
@@ -298,17 +289,17 @@ body.slide-active > .legend {
 
   .slide-controls {
     gap: 0.5rem;
-    padding: 0.25rem 1rem;
+    padding: 0.15rem 1rem;
   }
 
   .slide-nav-btn {
     font-size: 0.75rem;
-    padding: 0.2rem 0.6rem !important;
+    padding: 0.15rem 0.5rem !important;
   }
 
   .slide-speed-btn {
     font-size: 0.65rem;
-    padding: 0.15rem 0.4rem !important;
+    padding: 0.1rem 0.4rem !important;
   }
 
   .slide-speed-label {
