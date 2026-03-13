@@ -281,6 +281,7 @@ body.slide-active > .legend {
 
   .slide-chart-wrap #chart-container {
     padding: 0 0.5rem;
+    max-height: calc(100vh - 3.5rem);
   }
 
   .slide-chart-wrap .date-display {
