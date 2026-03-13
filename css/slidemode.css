@@ -196,3 +196,137 @@ body.slide-active > .controls,
 body.slide-active > .legend {
   visibility: hidden;
 }
+
+/* ─── Mobile Portrait ─── */
+@media (max-width: 768px) and (orientation: portrait) {
+  .slide-header {
+    padding: 0.4rem 0.75rem 0.15rem;
+  }
+
+  .slide-title {
+    font-size: 0.65rem;
+  }
+
+  .slide-label {
+    font-size: 1.2rem;
+  }
+
+  .slide-chart-wrap {
+    padding: 0 0.25rem;
+    align-items: flex-start;
+  }
+
+  .slide-chart-wrap #chart-container {
+    padding: 0.25rem;
+  }
+
+  /* Rotate the SVG chart to use the screen height as width */
+  .slide-chart-wrap #chart {
+    transform: rotate(90deg);
+    transform-origin: center center;
+    width: 85vh;
+    height: 85vw;
+  }
+
+  .slide-chart-wrap .date-display {
+    font-size: 1rem;
+  }
+
+  .slide-controls {
+    gap: 0.4rem;
+    padding: 0.4rem 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .slide-nav-btn {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.6rem !important;
+  }
+
+  .slide-dots {
+    order: 1;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .slide-speed {
+    margin-left: 0;
+  }
+
+  .slide-speed-label {
+    display: none;
+  }
+
+  .slide-speed-btn {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem !important;
+  }
+
+  .slide-exit-btn {
+    margin-left: 0.5rem;
+  }
+}
+
+/* ─── Mobile Landscape ─── */
+@media (max-height: 500px) and (orientation: landscape) {
+  .slide-header {
+    padding: 0.2rem 1rem 0;
+    flex-direction: row;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+
+  .slide-title {
+    font-size: 0.6rem;
+  }
+
+  .slide-label {
+    font-size: 1rem;
+  }
+
+  .slide-chart-wrap {
+    padding: 0 0.5rem;
+  }
+
+  .slide-chart-wrap #chart-container {
+    padding: 0 0.5rem;
+  }
+
+  .slide-chart-wrap .date-display {
+    font-size: 1rem;
+  }
+
+  .slide-controls {
+    gap: 0.5rem;
+    padding: 0.25rem 1rem;
+  }
+
+  .slide-nav-btn {
+    font-size: 0.75rem;
+    padding: 0.2rem 0.6rem !important;
+  }
+
+  .slide-speed-btn {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.4rem !important;
+  }
+
+  .slide-speed-label {
+    display: none;
+  }
+
+  .slide-exit-btn {
+    margin-left: 0.5rem;
+  }
+}
+
+/* ─── Tablet / small desktop ─── */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .slide-label {
+    font-size: 1.6rem;
+  }
+
+  .slide-chart-wrap {
+    padding: 0 1rem;
+  }
+}
