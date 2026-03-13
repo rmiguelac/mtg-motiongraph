@@ -73,8 +73,8 @@ export const DECK_THEMES = {
     image: "images/decks/dimirterror.png",
     barColor: "#536b90",
   },
-  "Mono White": {
-    image: "images/decks/monowhite.png",
+  "White Weenie": {
+    image: "images/decks/whiteweenie.png",
     barColor: "#e8e0d0",
   },
   "Esper Affinity": {
