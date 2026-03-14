@@ -217,6 +217,10 @@ export const DECK_THEMES = {
     image: "images/decks/serpentinecurve.png",
     barColor: "#4090c0",
   },
+  "Slivers": {
+    image: "images/decks/slivers.jpg",
+    barColor: "#6fb34f",
+  },
   "Simic Ponza": {
     image: "images/decks/simicponza.png",
     barColor: "#58a868",
