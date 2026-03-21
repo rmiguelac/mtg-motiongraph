@@ -22,17 +22,24 @@ export async function loadData(csvPath) {
   // Unique months in order of appearance
   const months = [...new Set(raw.map((d) => d.month))];
 
-  return { raw, months };
+  // Unique event types in order of appearance
+  const events = [...new Set(raw.map((d) => d.event).filter(Boolean))];
+
+  return { raw, months, events };
 }
 
 /**
  * Process raw data (optionally filtered by month) into
  * { dates, playerData, deckData } ready for the chart.
  */
-export function processData(raw, monthFilter) {
-  const filtered = monthFilter
+export function processData(raw, monthFilter, eventFilter) {
+  let filtered = monthFilter
     ? raw.filter((d) => d.month === monthFilter)
     : raw;
+
+  if (eventFilter && eventFilter.length > 0) {
+    filtered = filtered.filter((d) => eventFilter.includes(d.event));
+  }
 
   // Unique sorted dates
   const dates = [...new Set(filtered.map((d) => d.date))].sort(

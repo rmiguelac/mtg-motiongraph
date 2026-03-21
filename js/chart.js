@@ -1,7 +1,7 @@
 import {
   FULL_WIDTH, FULL_HEIGHT, WIDTH, HEIGHT, MARGIN,
   MAX_BARS, BAR_PADDING, DECK_THEMES,
-} from "./config.js";
+} from "./config.js?v=2";
 
 /**
  * Build a horizontal bar-chart race.
@@ -97,6 +97,27 @@ export function buildChart({ raw, state }) {
     .text("different decks");
 
   // ─── Snapshot helpers (read live from state.data) ───
+
+  // ─── No-data overlay ───
+  const noDataOverlay = svg.append("g")
+    .attr("class", "no-data-overlay")
+    .style("display", "none");
+
+  noDataOverlay.append("rect")
+    .attr("x", 0).attr("y", 0)
+    .attr("width", WIDTH).attr("height", HEIGHT)
+    .attr("fill", "#0d1117")
+    .attr("opacity", 0.7);
+
+  noDataOverlay.append("text")
+    .attr("x", WIDTH / 2).attr("y", HEIGHT / 2 - 10)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle")
+    .attr("fill", "#8b949e")
+    .attr("font-size", "1.25rem")
+    .attr("font-family", "Inter, sans-serif")
+    .text("No data for selected event type");
+
   function getPlayerSnapshot(idx) {
     const { playerData } = state.data;
     const colorMap = {};
@@ -310,6 +331,17 @@ export function buildChart({ raw, state }) {
 
   // ─── Render one frame ───
   function renderStep(step, dur) {
+    // No-data guard
+    if (state.data.dates.length === 0) {
+      barG.selectAll("g").remove();
+      xAxisG.selectAll("*").remove();
+      gridG.selectAll("line").remove();
+      deckGridG.style("opacity", 0);
+      noDataOverlay.style("display", null);
+      return;
+    }
+    noDataOverlay.style("display", "none");
+
     if (step === 0) {
       barG.selectAll("g").remove();
       x.domain([0, 1]);

@@ -1,8 +1,8 @@
-import { loadData, processData } from "./data.js";
-import { buildChart } from "./chart.js";
-import { initAnimation } from "./animation.js";
-import { initRecap } from "./recap.js";
-import { initSlideMode } from "./slidemode.js";
+import { loadData, processData } from "./data.js?v=2";
+import { buildChart } from "./chart.js?v=2";
+import { initAnimation } from "./animation.js?v=2";
+import { initRecap } from "./recap.js?v=2";
+import { initSlideMode } from "./slidemode.js?v=2";
 
 // Shared mutable state
 const state = {
@@ -12,18 +12,19 @@ const state = {
   top3Mode: false,
   viewMode: "ranking",  // ... | "deckwinrate"
   monthFilter: null,     // null = all months
+  eventFilter: [],       // empty = all event types
   // Mutable processed data — updated when month filter changes
   data: { dates: [], playerData: [], deckData: [], podiumData: [], top3Data: [], deckPopData: [], winRateData: [], attendanceData: [], deckDivData: [], playerDrawRateData: [], deckDrawRateData: [], deckWinRateData: [], deckDedicationData: [] },
 };
 
 async function main() {
-  const { raw, months } = await loadData("data/data.csv");
+  const { raw, months, events } = await loadData("data/data.csv");
 
-  // Initial processing (all months)
-  state.data = processData(raw, null);
+  // Initial processing (all months, all events)
+  state.data = processData(raw, null, []);
 
   const chart = buildChart({ raw, state });
-  const animControls = initAnimation({ chart, state, raw, months, processData });
+  const animControls = initAnimation({ chart, state, raw, months, events, processData });
   initRecap(raw);
   initSlideMode(animControls);
 }

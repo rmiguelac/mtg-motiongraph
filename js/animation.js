@@ -1,7 +1,7 @@
 /**
  * Animation controller — play, pause, reset, speed, views & month filter.
  */
-export function initAnimation({ chart, state, raw, months, processData }) {
+export function initAnimation({ chart, state, raw, months, events, processData }) {
   const { dateDisplay, renderStep } = chart;
 
   let animTimer = null;
@@ -157,9 +157,39 @@ export function initAnimation({ chart, state, raw, months, processData }) {
   monthSelect.on("change", function () {
     const val = this.value || null;
     state.monthFilter = val;
-    state.data = processData(raw, val);
+    state.data = processData(raw, val, state.eventFilter);
     reset();
     setTimeout(play, 300);
+  });
+
+  // ─── Event filter ───
+  const ALL_EVENTS = ["Weekly", "CLM", "Groselha"];
+  const eventFilterGroup = d3.select("#event-filter");
+
+  ALL_EVENTS.forEach((ev) => {
+    eventFilterGroup
+      .append("button")
+      .attr("class", "event-filter-btn active")
+      .attr("data-event", ev)
+      .text(ev);
+  });
+
+  eventFilterGroup.selectAll(".event-filter-btn").on("click", function () {
+    d3.select(this).classed("active", !d3.select(this).classed("active"));
+
+    const activeEvents = [];
+    eventFilterGroup.selectAll(".event-filter-btn.active").each(function () {
+      activeEvents.push(this.dataset.event);
+    });
+
+    // All selected or none selected → no filter (show all)
+    state.eventFilter = activeEvents.length === ALL_EVENTS.length || activeEvents.length === 0
+      ? []
+      : activeEvents;
+    state.data = processData(raw, state.monthFilter, state.eventFilter);
+    reset();
+    if (state.data.dates.length > 0) setTimeout(play, 300);
+    else renderStep(1, 0);
   });
 
   // Auto-play on load
