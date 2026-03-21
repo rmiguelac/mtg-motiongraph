@@ -185,7 +185,7 @@ export const DECK_THEMES = {
     image: "images/decks/simiclandfall.png",
     barColor: "#48a878",
   },
-  "Walls combo": {
+  "Walls Combo": {
     image: "images/decks/wallscombo.png",
     barColor: "#60a050",
   },
@@ -224,6 +224,14 @@ export const DECK_THEMES = {
   "Simic Ponza": {
     image: "images/decks/simicponza.png",
     barColor: "#58a868",
+  },
+  "Golgari Value Combo": {
+    image: "images/decks/golgarivaluecombo.png",
+    barColor: "#4a8c3f",
+  },
+  "Hangar Combo": {
+    image: "images/decks/hangarcombo.png",
+    barColor: "#c06030",
   },
 };
 
