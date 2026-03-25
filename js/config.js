@@ -233,6 +233,22 @@ export const DECK_THEMES = {
     image: "images/decks/hangarcombo.png",
     barColor: "#c06030",
   },
+  "Gruul Storm": {
+    image: "images/decks/gruulstorm.jpg",
+    barColor: "#d44020",
+  },
+  "Mono Black Rats": {
+    image: "images/decks/monoblackrats.jpg",
+    barColor: "#3a2a4a",
+  },
+  "Dimir Faeries": {
+    image: "images/decks/dimirfaeries.jpg",
+    barColor: "#2a3a5a",
+  },
+  "Sultai Affinity": {
+    image: "images/decks/sultaiaffinity.jpg",
+    barColor: "#3a6a4a",
+  },
 };
 
 // ─── Color palette ───
