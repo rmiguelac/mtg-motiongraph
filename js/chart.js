@@ -49,14 +49,26 @@ export function buildChart({ raw, state }) {
   const DECK_VIEWS = new Set(["deckwins", "deckpop", "deckdrawrate", "deckwinrate", "deckdedication"]);
 
   // ─── Deck Count Grid ───
-  const CELL = 68;
   const CELL_GAP = 8;
-  const CELL_STEP = CELL + CELL_GAP;
-  const GRID_COLS = 8;
-  const gridTotalW = GRID_COLS * CELL_STEP - CELL_GAP;
   const SIDE_PANEL_W = 150;
   const gridOffsetX = 10;
   const gridOffsetY = 20;
+
+  function computeGridLayout(N) {
+    const availW = WIDTH - SIDE_PANEL_W - gridOffsetX - 20;
+    const availH = HEIGHT - gridOffsetY - 10;
+    if (N === 0) return { cell: 68, cols: 8, cellStep: 76 };
+    let bestCell = 0, bestCols = 1;
+    for (let c = 1; c <= N; c++) {
+      const r = Math.ceil(N / c);
+      const cW = (availW - (c - 1) * CELL_GAP) / c;
+      const cH = (availH - (r - 1) * CELL_GAP) / r;
+      const sz = Math.min(cW, cH);
+      if (sz > bestCell) { bestCell = sz; bestCols = c; }
+    }
+    const cell = Math.floor(bestCell);
+    return { cell, cols: bestCols, cellStep: cell + CELL_GAP };
+  }
 
   // Shared rounded-rect clip (objectBoundingBox so one clip works for all cells)
   defs.append("clipPath")
@@ -72,7 +84,7 @@ export function buildChart({ raw, state }) {
     .style("opacity", 0);
 
   // Fixed counter on the right side
-  const sideCounterX = gridTotalW + 50 + SIDE_PANEL_W / 2;
+  const sideCounterX = WIDTH - SIDE_PANEL_W / 2;
   const sideCounterY = HEIGHT / 2 - 20;
 
   const gridCountNum = deckGridG.append("text")
@@ -385,12 +397,22 @@ export function buildChart({ raw, state }) {
         .filter((d) => d.firstIdx !== -1 && d.firstIdx <= idx)
         .sort((a, b) => a.firstIdx - b.firstIdx);
 
+      // Compute dynamic layout based on current deck count
+      const { cell, cols, cellStep } = computeGridLayout(decksAtStep.length);
+
+      // Center the grid in the available area
+      const nRows = Math.ceil(decksAtStep.length / cols);
+      const availW = WIDTH - SIDE_PANEL_W - gridOffsetX - 20;
+      const availH = HEIGHT - gridOffsetY - 10;
+      const padX = Math.max(0, (availW - (cols * cellStep - CELL_GAP)) / 2);
+      const padY = Math.max(0, (availH - (nRows * cellStep - CELL_GAP)) / 2);
+
       // Assign grid positions
       decksAtStep.forEach((d, i) => {
-        d.col = i % GRID_COLS;
-        d.row = Math.floor(i / GRID_COLS);
-        d.gx = d.col * CELL_STEP;
-        d.gy = d.row * CELL_STEP;
+        d.col = i % cols;
+        d.row = Math.floor(i / cols);
+        d.gx = d.col * cellStep + padX;
+        d.gy = d.row * cellStep + padY;
       });
 
       // Data join keyed by deck name
@@ -407,19 +429,21 @@ export function buildChart({ raw, state }) {
 
       // Outer group positioned at cell centre for scale-from-centre animation
       enter.attr("transform", (d) =>
-        `translate(${d.gx + CELL / 2}, ${d.gy + CELL / 2}) scale(0.01)`);
+        `translate(${d.gx + cell / 2}, ${d.gy + cell / 2}) scale(0.01)`);
 
-      // Inner group offsets content so (0,0)→(CELL,CELL) is centred
+      // Inner group offsets content so (0,0)→(cell,cell) is centred
       const inner = enter.append("g")
-        .attr("transform", `translate(${-CELL / 2}, ${-CELL / 2})`);
+        .attr("class", "cell-inner")
+        .attr("transform", `translate(${-cell / 2}, ${-cell / 2})`);
 
       // Background (fallback colour for no-image decks)
       inner.append("rect")
-        .attr("width", CELL).attr("height", CELL)
+        .attr("class", "cell-bg")
+        .attr("width", cell).attr("height", cell)
         .attr("rx", 6).attr("ry", 6)
         .attr("fill", (d) => {
           const t = DECK_THEMES[d.name];
-          return t ? t.color : "#30363d";
+          return t ? t.barColor : "#30363d";
         });
 
       // Deck image (if available)
@@ -427,18 +451,19 @@ export function buildChart({ raw, state }) {
         const theme = DECK_THEMES[d.name];
         if (theme && theme.image) {
           d3.select(this).append("image")
+            .attr("class", "cell-img")
             .attr("href", theme.image)
-            .attr("width", CELL).attr("height", CELL)
+            .attr("width", cell).attr("height", cell)
             .attr("preserveAspectRatio", "xMidYMid slice")
             .attr("clip-path", "url(#grid-cell-clip)");
         } else {
-          // Show first letter for decks with no image
           d3.select(this).append("text")
-            .attr("x", CELL / 2).attr("y", CELL / 2)
+            .attr("class", "cell-letter")
+            .attr("x", cell / 2).attr("y", cell / 2)
             .attr("text-anchor", "middle")
             .attr("dominant-baseline", "central")
             .attr("fill", "#fff")
-            .attr("font-size", "1.6rem")
+            .attr("font-size", `${Math.max(12, Math.round(cell * 0.3))}px`)
             .attr("font-weight", "700")
             .attr("font-family", "Inter, sans-serif")
             .attr("opacity", 0.7)
@@ -448,7 +473,8 @@ export function buildChart({ raw, state }) {
 
       // Border
       inner.append("rect")
-        .attr("width", CELL).attr("height", CELL)
+        .attr("class", "cell-border")
+        .attr("width", cell).attr("height", cell)
         .attr("rx", 6).attr("ry", 6)
         .attr("fill", "none")
         .attr("stroke", "#484f58")
@@ -456,10 +482,11 @@ export function buildChart({ raw, state }) {
 
       // Deck name label at bottom of cell
       inner.append("text")
-        .attr("x", CELL / 2).attr("y", CELL - 5)
+        .attr("class", "cell-label")
+        .attr("x", cell / 2).attr("y", cell - 5)
         .attr("text-anchor", "middle")
         .attr("fill", "#fff")
-        .attr("font-size", "0.42rem")
+        .attr("font-size", `${Math.max(7, Math.round(cell * 0.1))}px`)
         .attr("font-weight", "600")
         .attr("font-family", "Inter, sans-serif")
         .attr("stroke", "#000")
@@ -470,12 +497,29 @@ export function buildChart({ raw, state }) {
       // Pop-in animation (scale from centre + fade)
       enter.transition().duration(400).ease(d3.easeBackOut.overshoot(1.7))
         .attr("transform", (d) =>
-          `translate(${d.gx + CELL / 2}, ${d.gy + CELL / 2}) scale(1)`)
+          `translate(${d.gx + cell / 2}, ${d.gy + cell / 2}) scale(1)`)
         .style("opacity", 1);
 
-      // UPDATE — existing cells keep their position (stable order)
+      // UPDATE — reposition existing cells and resize all child elements
+      // (cell size can shrink as more decks accumulate)
+      const allCells = enter.merge(cells);
+
       cells.attr("transform", (d) =>
-        `translate(${d.gx + CELL / 2}, ${d.gy + CELL / 2}) scale(1)`);
+        `translate(${d.gx + cell / 2}, ${d.gy + cell / 2}) scale(1)`);
+      allCells.select(".cell-inner")
+        .attr("transform", `translate(${-cell / 2}, ${-cell / 2})`);
+      allCells.select(".cell-bg")
+        .attr("width", cell).attr("height", cell);
+      allCells.select(".cell-img")
+        .attr("width", cell).attr("height", cell);
+      allCells.select(".cell-letter")
+        .attr("x", cell / 2).attr("y", cell / 2)
+        .attr("font-size", `${Math.max(12, Math.round(cell * 0.3))}px`);
+      allCells.select(".cell-border")
+        .attr("width", cell).attr("height", cell);
+      allCells.select(".cell-label")
+        .attr("x", cell / 2).attr("y", cell - 5)
+        .attr("font-size", `${Math.max(7, Math.round(cell * 0.1))}px`);
 
       // Tooltip on hover
       enter.on("mouseover", (event, d) => {
