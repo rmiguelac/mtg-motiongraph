@@ -45,8 +45,8 @@ export const DECK_THEMES = {
     image: "images/decks/familiars.png",
     barColor: "#a8b8d8",
   },
-  "Jund": {
-    image: "images/decks/jund.png",
+  "Jund Wildfire": {
+    image: "images/decks/jundwildfire.png",
     barColor: "#b5473a",
   },
   "Jund Gardens": {
