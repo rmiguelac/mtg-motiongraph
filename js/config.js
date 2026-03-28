@@ -249,6 +249,10 @@ export const DECK_THEMES = {
     image: "images/decks/sultaiaffinity.jpg",
     barColor: "#3a6a4a",
   },
+  "Naya Gates": {
+    image: "images/decks/nayagates.jpg",
+    barColor: "#c8a830",
+  },
 };
 
 // ─── Color palette ───
