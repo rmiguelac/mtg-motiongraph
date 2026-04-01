@@ -121,8 +121,8 @@ export const DECK_THEMES = {
     image: "images/decks/frognitorakdos.png",
     barColor: "#a06830",
   },
-  "Pestilence Cats": {
-    image: "images/decks/pestilencecats.png",
+  "Gardens Pestilence": {
+    image: "images/decks/gardenspestilence.png",
     barColor: "#505050",
   },
   "Flicker Tron": {
@@ -228,6 +228,18 @@ export const DECK_THEMES = {
   "Golgari Value Combo": {
     image: "images/decks/golgarivaluecombo.png",
     barColor: "#4a8c3f",
+  },
+  "Mono Red Dredge": {
+    image: "images/decks/monoreddredge.png",
+    barColor: "#e05040",
+  },
+  "Mono Red Aggro": {
+    image: "images/decks/monoredaggro.png",
+    barColor: "#ff6b5a",
+  },
+  "Temur Affitremors": {
+    image: "images/decks/temuraffitremors.png",
+    barColor: "#48a878",
   },
   "Hangar Combo": {
     image: "images/decks/hangarcombo.png",

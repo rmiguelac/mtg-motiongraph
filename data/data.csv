@@ -49,7 +49,7 @@ position,name,points,wins,losses,draws,deck,date,month,event
 1,Rodrigo Camargo,9,3,0,0,Gruul Ramp,2026.01.23,january,Weekly
 2,Gabriel Mantovani,4,1,1,1,Mono Red Madness,2026.01.23,january,Weekly
 3,Andre Borges,2,0,1,2,Familiars,2026.01.23,january,Weekly
-4,Lucas Murta,1,0,2,1,Pestilence Cats,2026.01.23,january,Weekly
+4,Lucas Murta,1,0,2,1,Gardens Pestilence,2026.01.23,january,Weekly
 1,Rafael Sardeli,12,4,0,0,Gruul Ponza,2026.02.02,february,Weekly
 2,Bruno Lima,9,3,1,0,Jund Wildfire,2026.02.02,february,Weekly
 3,Jota G,9,3,1,0,Rakdos Madness,2026.02.02,february,Weekly
@@ -117,7 +117,7 @@ position,name,points,wins,losses,draws,deck,date,month,event
 4,Luca Souza,9,3,1,0,Mono Red Rally,2026.02.27,february,Weekly
 5,Andre Borges,7,2,1,1,Jeskai Control Skred,2026.02.27,february,Weekly
 6,Francisco de Paula,6,2,2,0,Mono Blue Terror,2026.02.27,february,Weekly
-7,Lucas Murta,6,2,2,0,Pestilence Cats,2026.02.27,february,Weekly
+7,Lucas Murta,6,2,2,0,Gardens Pestilence,2026.02.27,february,Weekly
 8,Filipe Doria,6,2,2,0,Grixis Affinity,2026.02.27,february,Weekly
 9,Gustavo Cruz,3,1,2,0,Grixis Affinity,2026.02.27,february,Weekly
 10,Arthur Moraes,3,1,3,0,Simic Landfall,2026.02.27,february,Weekly
@@ -188,3 +188,13 @@ position,name,points,wins,losses,draws,deck,date,month,event
 7,Vicenzo Orlandi,4,1,2,1,Mono Blue Terror,2026.03.27,march,Weekly
 8,Murilo Ditomaso Christinelli,4,1,2,1,Monstron,2026.03.27,march,Weekly
 9,Gustavo Boldrin,3,1,3,0,Mono Blue Terror,2026.03.27,march,Weekly
+1,Rafael Sardeli,9,3,1,0,Rakdos Madness,2026.03.30,march,Weekly
+2,Felipe GS,9,3,1,0,Mono Blue Faeries,2026.03.30,march,Weekly
+3,Lucas Murta,9,3,1,0,Gardens Pestilence,2026.03.30,march,Weekly
+4,Matheus Grillo,6,2,2,0,Mono Red Dredge,2026.03.30,march,Weekly
+5,Newton Falcao,6,2,2,0,Madness Burn,2026.03.30,march,Weekly
+6,Gabriel Mantovani,6,2,2,0,Grixis Affinity,2026.03.30,march,Weekly
+7,Rui C.,6,2,2,0,Jund Wildfire,2026.03.30,march,Weekly
+8,Filipe Doria,4,1,2,1,Temur Affitremors,2026.03.30,march,Weekly
+9,Gustavo Boldrin,3,1,3,0,Mono Blue Terror,2026.03.30,march,Weekly
+10,Pedro GR,1,0,3,1,Mono Red Aggro,2026.03.30,march,Weekly
