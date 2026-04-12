@@ -265,6 +265,10 @@ export const DECK_THEMES = {
     image: "images/decks/nayagates.jpg",
     barColor: "#c8a830",
   },
+  "Glitterless Affinity": {
+    image: "images/decks/glitterlessaffinity.jpg",
+    barColor: "#5090c8",
+  },
 };
 
 // ─── Color palette ───
