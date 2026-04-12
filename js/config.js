@@ -269,6 +269,10 @@ export const DECK_THEMES = {
     image: "images/decks/glitterlessaffinity.jpg",
     barColor: "#5090c8",
   },
+  "Mono Green Aggro": {
+    image: "images/decks/monogreenaggro.jpg",
+    barColor: "#58a050",
+  },
 };
 
 // ─── Color palette ───
