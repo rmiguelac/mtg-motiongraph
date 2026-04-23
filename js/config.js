@@ -273,6 +273,14 @@ export const DECK_THEMES = {
     image: "images/decks/monogreenaggro.jpg",
     barColor: "#58a050",
   },
+  "Pizza Combo": {
+    image: "images/decks/pizzacombo.jpg",
+    barColor: "#c8a840",
+  },
+  "Gruul Madness": {
+    image: "images/decks/gruulmadness.jpg",
+    barColor: "#a06830",
+  },
 };
 
 // ─── Color palette ───
