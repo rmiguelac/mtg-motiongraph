@@ -281,6 +281,26 @@ export const DECK_THEMES = {
     image: "images/decks/gruulmadness.jpg",
     barColor: "#a06830",
   },
+  "Mono White Heroic": {
+    image: "images/decks/monowhiteheroic.jpg",
+    barColor: "#f0e8d0",
+  },
+  "Esper Bounce": {
+    image: "images/decks/esperbounce.jpg",
+    barColor: "#8090b0",
+  },
+  "Esper Affininjas": {
+    image: "images/decks/esperaffininjas.jpg",
+    barColor: "#a0b0d0",
+  },
+  "Dredge": {
+    image: "images/decks/dredge.jpg",
+    barColor: "#404050",
+  },
+  "Dimir Shadow": {
+    image: "images/decks/dimirshadow.jpg",
+    barColor: "#2a2a3a",
+  },
 };
 
 // ─── Color palette ───
