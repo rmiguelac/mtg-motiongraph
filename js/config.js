@@ -113,10 +113,6 @@ export const DECK_THEMES = {
     image: "images/decks/madnessburn.png",
     barColor: "#ff6040",
   },
-  "Fractius": {
-    image: "images/decks/fractius.png",
-    barColor: "#70b060",
-  },
   "Frognito Rakdos": {
     image: "images/decks/frognitorakdos.png",
     barColor: "#a06830",
@@ -265,10 +261,6 @@ export const DECK_THEMES = {
     image: "images/decks/nayagates.jpg",
     barColor: "#c8a830",
   },
-  "Glitterless Affinity": {
-    image: "images/decks/glitterlessaffinity.jpg",
-    barColor: "#5090c8",
-  },
   "Mono Green Aggro": {
     image: "images/decks/monogreenaggro.jpg",
     barColor: "#58a050",
@@ -300,6 +292,10 @@ export const DECK_THEMES = {
   "Dimir Shadow": {
     image: "images/decks/dimirshadow.jpg",
     barColor: "#2a2a3a",
+  },
+  "Infect": {
+    image: "images/decks/infect.jpg",
+    barColor: "#50a050",
   },
 };
 

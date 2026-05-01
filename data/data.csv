@@ -44,7 +44,7 @@ position,name,points,wins,losses,draws,deck,date,month,event
 5,Filipe Doria,6,2,2,0,Esper Affinity,2026.01.26,january,Weekly
 6,Jota G,6,2,2,0,Spy,2026.01.26,january,Weekly
 7,Pedro Cook,6,2,2,0,Whale Combo,2026.01.26,january,Weekly
-8,João Gomes,3,1,3,0,Fractius,2026.01.26,january,Weekly
+8,João Gomes,3,1,3,0,Slivers,2026.01.26,january,Weekly
 9,Lucas Murta,3,1,2,0,Gruul Ramp,2026.01.26,january,Weekly
 1,Rodrigo Camargo,9,3,0,0,Gruul Ramp,2026.01.23,january,Weekly
 2,Gabriel Mantovani,4,1,1,1,Mono Red Madness,2026.01.23,january,Weekly
@@ -232,7 +232,7 @@ position,name,points,wins,losses,draws,deck,date,month,event
 2,Pedro Takeshi,6,2,1,0,Naya Gates,2026.04.10,april,Weekly
 3,Matheus Grillo,6,2,1,0,Dimir Spirits,2026.04.10,april,Weekly
 4,Lucas Murta,6,2,1,0,Gardens Pestilence,2026.04.10,april,Weekly
-5,Gabriel Mantovani,3,1,2,0,Glitterless Affinity,2026.04.10,april,Weekly
+5,Gabriel Mantovani,3,1,2,0,Esper Affinity,2026.04.10,april,Weekly
 6,Gustavo Boldrin,0,0,3,0,Mono Blue Terror,2026.04.10,april,Weekly
 1,Jota G,9,3,0,0,Spy,2026.04.17,april,Weekly
 2,Mauricio Pavani,6,2,1,0,Monstron,2026.04.17,april,Weekly
@@ -247,6 +247,17 @@ position,name,points,wins,losses,draws,deck,date,month,event
 6,Gustavo Boldrin,6,2,2,0,Mono Blue Terror,2026.04.27,april,Weekly
 7,Pedro Cook,3,1,3,0,Caw Gates,2026.04.27,april,Weekly
 8,Pedro Mareschach,0,0,4,0,Mono White Heroic,2026.04.27,april,Weekly
+1,Felipe GS,12,4,0,0,Walls Combo,2026.04.30,april,Weekly
+2,Pedro Takeshi,9,3,1,0,Gruul Ramp,2026.04.30,april,Weekly
+3,Gustavo Boldrin,9,3,1,0,Mono Blue Terror,2026.04.30,april,Weekly
+4,Lucas Murta,9,3,1,0,Gardens Pestilence,2026.04.30,april,Weekly
+5,Pedro Mareschach,6,2,2,0,Mono White Heroic,2026.04.30,april,Weekly
+6,Matheus Grillo,6,2,2,0,Glint Blade,2026.04.30,april,Weekly
+7,Rafael Sardeli,6,2,2,0,Infect,2026.04.30,april,Weekly
+8,Murilo Ditomaso Christinelli,6,2,2,0,Jund Wildfire,2026.04.30,april,Weekly
+9,Rui C.,3,1,3,0,Izzet Skred,2026.04.30,april,Weekly
+10,Marcus Vinicius Pereira Lopes,3,1,3,0,Grixis Affinity,2026.04.30,april,Weekly
+11,Helton Calado,3,1,3,0,Dimir Terror,2026.04.30,april,Weekly
 1,Lucas Murta,9,3,1,0,Gardens Pestilence,2026.04.24,april,Weekly
 2,Jota G,9,3,1,0,Gruul Storm,2026.04.24,april,Weekly
 3,Rui C.,9,3,1,0,Esper Affininjas,2026.04.24,april,Weekly
