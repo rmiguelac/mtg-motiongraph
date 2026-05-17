@@ -20,6 +20,11 @@ const state = {
 async function main() {
   const { raw, months, events } = await loadData("data/data.csv");
 
+  // Set last updated date from most recent event in the data
+  const lastDate = raw.reduce((max, d) => d.dateObj > max ? d.dateObj : max, new Date(0));
+  const formatted = lastDate.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
+  document.getElementById("last-updated-date").textContent = formatted;
+
   // Initial processing (all months, all events)
   state.data = processData(raw, null, []);
 

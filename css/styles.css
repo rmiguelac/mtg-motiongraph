@@ -1,3 +1,21 @@
+/* ─── Footer / Last Updated ─── */
+.last-updated {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.78rem;
+  color: #4a5568;
+  text-align: center;
+  cursor: default;
+  transition: color 0.2s ease, font-weight 0.2s ease;
+  user-select: none;
+}
+
+.last-updated:hover,
+.last-updated:active {
+  color: #c9a84c;
+  font-weight: 600;
+}
+
 /* ─── Reset ─── */
 *,
 *::before,
