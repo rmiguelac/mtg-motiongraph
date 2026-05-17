@@ -297,6 +297,26 @@ export const DECK_THEMES = {
     image: "images/decks/infect.jpg",
     barColor: "#50a050",
   },
+  "Boros Synthesizer": {
+    image: "images/decks/borossynthesizer.jpg",
+    barColor: "#e05030",
+  },
+  "Mono Red Burn": {
+    image: "images/decks/monoredbum.jpg",
+    barColor: "#cc3300",
+  },
+  "Mono Black Devotion": {
+    image: "images/decks/monoblackdevotion.jpg",
+    barColor: "#2a0a3a",
+  },
+  "Boros Bully": {
+    image: "images/decks/borosbully.jpg",
+    barColor: "#d4a030",
+  },
+  "Golgari Control": {
+    image: "images/decks/golgaricontrol.jpg",
+    barColor: "#3a5a2a",
+  },
 };
 
 // ─── Color palette ───
