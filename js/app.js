@@ -14,7 +14,7 @@ const state = {
   monthFilter: null,     // null = all months
   eventFilter: [],       // empty = all event types
   // Mutable processed data — updated when month filter changes
-  data: { dates: [], playerData: [], deckData: [], podiumData: [], top3Data: [], deckPopData: [], winRateData: [], attendanceData: [], deckDivData: [], playerDrawRateData: [], deckDrawRateData: [], deckWinRateData: [], deckDedicationData: [] },
+  data: { dates: [], playerData: [], deckData: [], podiumData: [], top3Data: [], deckPopData: [], winRateData: [], attendanceData: [], deckDivData: [], playerDrawRateData: [], deckDrawRateData: [], deckWinRateData: [], deckDedicationData: [], deckPodiumData: [] },
 };
 
 async function main() {

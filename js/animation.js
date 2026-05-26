@@ -140,6 +140,7 @@ export function initAnimation({ chart, state, raw, months, events, processData }
 
   // Deck sub-views
   d3.select("#btn-deckwins").on("click", () => switchView("deckwins"));
+  d3.select("#btn-deckpodium").on("click", () => switchView("deckpodium"));
   d3.select("#btn-deckpop").on("click", () => switchView("deckpop"));
   d3.select("#btn-deckdrawrate").on("click", () => switchView("deckdrawrate"));
   d3.select("#btn-deckwinrate").on("click", () => switchView("deckwinrate"));

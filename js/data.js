@@ -516,5 +516,40 @@ export function processData(raw, monthFilter, eventFilter) {
   );
   deckDedicationData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
 
-  return { dates, playerData, deckData, podiumData, top3Data, deckPopData, winRateData, attendanceData, deckDivData, playerDrawRateData, deckDrawRateData, deckWinRateData, deckDedicationData };
+  // ─── Deck 1st place data (cumulative 1st place finishes per deck) ───
+  const deckPodiumCumulative = {};
+  const deckPodiumRunning = {};
+  allDecks.forEach((dk) => {
+    deckPodiumCumulative[dk] = [];
+    deckPodiumRunning[dk] = 0;
+  });
+
+  dates.forEach((date) => {
+    const tourneyRows = filtered.filter((d) => d.date === date);
+    tourneyRows.forEach((row) => {
+      if (row.position === 1) deckPodiumRunning[row.deck] += 1;
+    });
+    allDecks.forEach((dk) => {
+      deckPodiumCumulative[dk].push({
+        date,
+        dateObj: parseLocalDate(date),
+        total: deckPodiumRunning[dk],
+      });
+    });
+  });
+
+  const deckPodiumData = allDecks.map((name, i) => ({
+    name,
+    color: PALETTE[i % PALETTE.length],
+    values: deckPodiumCumulative[name],
+  }));
+
+  deckPodiumData.sort(
+    (a, b) =>
+      b.values[b.values.length - 1].total -
+      a.values[a.values.length - 1].total
+  );
+  deckPodiumData.forEach((d, i) => (d.color = PALETTE[i % PALETTE.length]));
+
+  return { dates, playerData, deckData, podiumData, top3Data, deckPopData, winRateData, attendanceData, deckDivData, playerDrawRateData, deckDrawRateData, deckWinRateData, deckDedicationData, deckPodiumData };
 }

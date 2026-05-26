@@ -13,6 +13,7 @@ const SLIDES = [
   { mode: "deckdiv",          label: "🎲 Deck Diversity" },
   { mode: "deckdedication",   label: "💜 Deck Dedication" },
   { mode: "deckwins",         label: "🃏 Deck Wins" },
+  { mode: "deckpodium",       label: "🥇 Deck 1st Place" },
   { mode: "deckpop",          label: "📊 Popularity" },
   { mode: "deckdrawrate",     label: "🤝 Deck Draw Rate" },
   { mode: "deckwinrate",      label: "🎯 Deck Win Rate" },

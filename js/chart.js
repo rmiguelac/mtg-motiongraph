@@ -46,7 +46,7 @@ export function buildChart({ raw, state }) {
   const barG = svg.append("g").attr("class", "bars");
 
   // Deck views that show deck images
-  const DECK_VIEWS = new Set(["deckwins", "deckpop", "deckdrawrate", "deckwinrate", "deckdedication"]);
+  const DECK_VIEWS = new Set(["deckwins", "deckpop", "deckdrawrate", "deckwinrate", "deckdedication", "deckpodium"]);
 
   // ─── Deck Count Grid ───
   const CELL_GAP = 8;
@@ -315,6 +315,22 @@ export function buildChart({ raw, state }) {
       .slice(0, MAX_BARS);
   }
 
+  function getDeckPodiumSnapshot(idx) {
+    const { deckPodiumData } = state.data;
+    const colorMap = {};
+    deckPodiumData.forEach((d) => (colorMap[d.name] = d.color));
+    return deckPodiumData
+      .map((d) => ({
+        name: d.name,
+        total: d.values[idx].total,
+        color: colorMap[d.name],
+        date: d.values[idx].date,
+      }))
+      .filter((d) => d.total > 0)
+      .sort((a, b) => b.total - a.total)
+      .slice(0, MAX_BARS);
+  }
+
   function getDeckDedicationSnapshot(idx) {
     const { deckDedicationData } = state.data;
     if (!deckDedicationData) return [];
@@ -367,6 +383,7 @@ export function buildChart({ raw, state }) {
     const idx = Math.min(step - 1, state.data.dates.length - 1);
     let snapshot;
     if (state.viewMode === "deckwins") snapshot = getDeckSnapshot(idx);
+    else if (state.viewMode === "deckpodium") snapshot = getDeckPodiumSnapshot(idx);
     else if (state.viewMode === "podium") snapshot = getPodiumSnapshot(idx);
     else if (state.viewMode === "top3finishes") snapshot = getTop3Snapshot(idx);
     else if (state.viewMode === "deckpop") snapshot = getDeckPopSnapshot(idx);
