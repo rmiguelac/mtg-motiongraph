@@ -49,6 +49,10 @@ export const DECK_THEMES = {
     image: "images/decks/jundwildfire.png",
     barColor: "#b5473a",
   },
+  "Temur Wildfire": {
+    image: "images/decks/temurwildfire.jpg",
+    barColor: "#3a7a5a",
+  },
   "Jund Gardens": {
     image: "images/decks/jundgardens.png",
     barColor: "#6b4e3d",
@@ -101,7 +105,7 @@ export const DECK_THEMES = {
     image: "images/decks/monoredmadness.png",
     barColor: "#d05030",
   },
-  "Cyclestorm": {
+  "Cycle Storm": {
     image: "images/decks/cyclestorm.png",
     barColor: "#404040",
   },
@@ -284,6 +288,10 @@ export const DECK_THEMES = {
   "Esper Affininjas": {
     image: "images/decks/esperaffininjas.jpg",
     barColor: "#a0b0d0",
+  },
+  "Affininjas": {
+    image: "images/decks/affininjas.jpg",
+    barColor: "#3a6080",
   },
   "Dredge": {
     image: "images/decks/dredge.jpg",
