@@ -3,6 +3,7 @@
  */
 export function initAnimation({ chart, state, raw, months, events, processData }) {
   const { dateDisplay, renderStep } = chart;
+  const finalResultsBtn = d3.select("#btn-final-results");
 
   let animTimer = null;
   let onAnimationEnd = null;  // callback when animation finishes
@@ -35,7 +36,43 @@ export function initAnimation({ chart, state, raw, months, events, processData }
     );
   }
 
+  function setFinalFrame() {
+    const dates = getDates();
+    if (dates.length === 0) {
+      state.currentStep = 0;
+      dateDisplay.text("");
+      renderStep(1, 0);
+      return;
+    }
+    state.currentStep = dates.length;
+    setStep(state.currentStep);
+  }
+
+  function refreshPlaybackForMode() {
+    if (state.finalResultsOnly) {
+      stop();
+      setFinalFrame();
+      if (onAnimationEnd) onAnimationEnd();
+      return;
+    }
+    reset();
+    setTimeout(play, 300);
+  }
+
+  function syncFinalResultsButton() {
+    finalResultsBtn
+      .classed("active", state.finalResultsOnly)
+      .text(state.finalResultsOnly ? "Show only final results: On" : "Show only final results: Off");
+  }
+
   function play() {
+    if (state.finalResultsOnly) {
+      stop();
+      setFinalFrame();
+      if (onAnimationEnd) onAnimationEnd();
+      return;
+    }
+
     stop();
     const dates = getDates();
     if (state.currentStep >= dates.length) state.currentStep = 0;
@@ -84,8 +121,7 @@ export function initAnimation({ chart, state, raw, months, events, processData }
     state.viewMode = mode;
     d3.selectAll(".view-btn").classed("active", false);
     d3.select(`#btn-${mode}`).classed("active", true);
-    reset();
-    setTimeout(play, 300);
+    refreshPlaybackForMode();
   }
 
   // Category sub-row toggling
@@ -159,8 +195,7 @@ export function initAnimation({ chart, state, raw, months, events, processData }
     const val = this.value || null;
     state.monthFilter = val;
     state.data = processData(raw, val, state.eventFilter);
-    reset();
-    setTimeout(play, 300);
+    refreshPlaybackForMode();
   });
 
   // ─── Event filter ───
@@ -193,10 +228,16 @@ export function initAnimation({ chart, state, raw, months, events, processData }
       ? []
       : activeEvents;
     state.data = processData(raw, state.monthFilter, state.eventFilter);
-    reset();
-    if (state.data.dates.length > 0) setTimeout(play, 300);
-    else renderStep(1, 0);
+    refreshPlaybackForMode();
   });
+
+  finalResultsBtn.on("click", () => {
+    state.finalResultsOnly = !state.finalResultsOnly;
+    syncFinalResultsButton();
+    refreshPlaybackForMode();
+  });
+
+  syncFinalResultsButton();
 
   // Auto-play on load
   setTimeout(play, 600);

@@ -8,6 +8,7 @@ import { initSlideMode } from "./slidemode.js?v=2";
 const state = {
   speed: 1000,
   currentStep: 0,
+  finalResultsOnly: false,
   hiddenPlayers: new Set(),
   top3Mode: false,
   viewMode: "ranking",  // ... | "deckwinrate"

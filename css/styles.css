@@ -214,6 +214,17 @@ button.active {
   font-weight: 600;
 }
 
+.final-results-btn {
+  border-color: #8b949e;
+  color: #8b949e;
+}
+
+.final-results-btn.active {
+  background: #3fb950;
+  color: #0d1117;
+  border-color: #3fb950;
+}
+
 .speed-label {
   font-size: 0.8rem;
   color: #8b949e;
