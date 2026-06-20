@@ -265,6 +265,10 @@ export const DECK_THEMES = {
     image: "images/decks/nayagates.jpg",
     barColor: "#c8a830",
   },
+  "Selesnya Gates": {
+    image: "images/decks/nayagates.jpg",
+    barColor: "#c8a830",
+  },
   "Mono Green Aggro": {
     image: "images/decks/monogreenaggro.jpg",
     barColor: "#58a050",
@@ -309,6 +313,10 @@ export const DECK_THEMES = {
     image: "images/decks/borossynthesizer.jpg",
     barColor: "#e05030",
   },
+  "Inside Out": {
+    image: "https://cards.scryfall.io/normal/front/1/d/1d23e47a-21d5-4d7e-8aa0-3b3064da5967.jpg?1562900445",
+    barColor: "#d8c8a0",
+  },
   "Mono Red Burn": {
     image: "images/decks/monoredbum.jpg",
     barColor: "#cc3300",
@@ -316,6 +324,10 @@ export const DECK_THEMES = {
   "Mono Black Devotion": {
     image: "images/decks/monoblackdevotion.jpg",
     barColor: "#2a0a3a",
+  },
+  "Mono Black Drain": {
+    image: "https://cards.scryfall.io/normal/front/7/8/7847ca54-c608-452a-a19e-3d08b8d8b8f3.jpg?1758049114",
+    barColor: "#1f1a26",
   },
   "Boros Bully": {
     image: "images/decks/borosbully.jpg",

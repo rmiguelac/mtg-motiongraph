@@ -347,3 +347,65 @@ position,name,points,wins,losses,draws,deck,date,month,event
 11,Gustavo Boldrin,3,1,3,0,Mono Red Madness,2026.05.18,may,CLM
 12,João Pedro Dipold,3,1,3,0,Mono Blue Faeries,2026.05.18,may,CLM
 13,Matheus Grillo,3,1,3,0,Flicker Tron,2026.05.18,may,CLM
+1,Gustavo Boldrin,10,3,0,1,Mono Red Madness,2026.06.15,june,Weekly
+2,Pedro Takeshi,9,3,1,0,Gruul Ramp,2026.06.15,june,Weekly
+3,Andre Borges,7,2,1,1,Familiars,2026.06.15,june,Weekly
+4,Murilo Ditomaso Christinelli,7,2,1,1,Jund Wildfire,2026.06.15,june,Weekly
+5,Rui C.,6,2,2,0,Mono Red Madness,2026.06.15,june,Weekly
+6,Matheus Grillo,6,2,2,0,Dimir Faeries,2026.06.15,june,Weekly
+7,Gabriel Mantovani,6,2,2,0,Petitioners,2026.06.15,june,Weekly
+8,Paulo Lopes,3,1,3,0,Glint Blade,2026.06.15,june,Weekly
+9,Filipe Doria,2,0,2,2,Selesnya Gates,2026.06.15,june,Weekly
+10,Pedro Christinelli,1,0,3,1,Mono Black Sacrifice,2026.06.15,june,Weekly
+1,Matheus Grillo,9,3,0,0,Dimir Faeries,2026.06.12,june,Weekly
+2,Rafael Sardeli,6,2,1,0,Dimir Terror,2026.06.12,june,Weekly
+3,Gabriel Mantovani,6,2,1,0,Inside Out,2026.06.12,june,Weekly
+4,Lucas Murta,6,2,1,0,Golgari Gardens,2026.06.12,june,Weekly
+5,Joao Gomes,3,1,2,0,Slivers,2026.06.12,june,Weekly
+6,Pedro Mareschach,3,1,2,0,White Weenie,2026.06.12,june,Weekly
+7,Pedro Christinelli,3,1,2,0,Mono Black Sacrifice,2026.06.12,june,Weekly
+1,Lucas Murta,10,3,0,1,Golgari Gardens,2026.06.08,june,Weekly
+2,Pedro Cook,7,2,1,1,Pizza Combo,2026.06.08,june,Weekly
+3,Newton Falcao,7,2,1,1,Monstron,2026.06.08,june,Weekly
+4,Filipe Doria,7,2,1,1,Gruul Ponza,2026.06.08,june,Weekly
+5,Matheus Grillo,6,2,2,0,Mono Red Dredge,2026.06.08,june,Weekly
+6,Rui C.,6,2,2,0,Whale Combo,2026.06.08,june,Weekly
+7,Baia (Rauan) Samam,6,2,2,0,Flicker Tron,2026.06.08,june,Weekly
+8,Paulo Lopes,5,1,1,2,Bogles,2026.06.08,june,Weekly
+9,Rafael Sardeli,3,1,3,0,Dimir Terror,2026.06.08,june,Weekly
+10,Pedro Mareschach,0,0,4,0,Mono Blue Terror,2026.06.08,june,Weekly
+1,Gabriel Ginja,9,3,0,0,Gruul Ponza,2026.06.05,june,Weekly
+2,Gabriel Mantovani,6,2,1,0,Inside Out,2026.06.05,june,Weekly
+3,Matheus Grillo,6,2,1,0,Boros Bully,2026.06.05,june,Weekly
+4,Gustavo Boldrin,6,2,1,0,Gruul Ramp,2026.06.05,june,Weekly
+5,Pedro Takeshi,3,1,2,0,Boros Synthesizer,2026.06.05,june,Weekly
+6,Pedro Christinelli,3,1,2,0,Rakdos Madness,2026.06.05,june,Weekly
+7,Pedro Mareschach,3,1,2,0,White Weenie,2026.06.05,june,Weekly
+1,Murilo Ditomaso Christinelli,9,3,0,0,Jund Wildfire,2026.05.31,may,Weekly
+2,Filipe Doria,6,2,1,0,Rakdos Madness,2026.05.31,may,Weekly
+3,Andre Borges,6,2,1,0,Familiars,2026.05.31,may,Weekly
+4,Pedro Christinelli,3,1,2,0,Mono Black Drain,2026.05.31,may,Weekly
+5,Pedro Mareschach,3,1,2,0,Mono White Heroic,2026.05.31,may,Weekly
+1,Pietro Venturoli,9,3,0,0,Mono Red Madness,2026.05.31,may,Top8-CLM
+2,Rui C.,6,2,1,0,Elves,2026.05.31,may,Top8-CLM
+3,Matheus Grillo,3,1,1,0,Izzet Skred,2026.05.31,may,Top8-CLM
+4,Rafael Sardeli,3,1,1,0,Gruul Ponza,2026.05.31,may,Top8-CLM
+5,Pedro Henrique Cez Cunha,0,0,1,0,Glint Blade,2026.05.31,may,Top8-CLM
+6,João Pedro Dipold,0,0,1,0,Mono Blue Faeries,2026.05.31,may,Top8-CLM
+7,Lucas Murta,0,0,1,0,Golgari Gardens,2026.05.31,may,Top8-CLM
+8,Gabriel Mantovani,0,0,1,0,Spy,2026.05.31,may,Top8-CLM
+1,Matheus Grillo,9,3,0,0,Izzet Skred,2026.05.29,may,Top8-Monthly
+2,Pedro Takeshi,6,2,1,0,White Weenie,2026.05.29,may,Top8-Monthly
+3,Rui C.,3,1,1,0,Golgari Gardens,2026.05.29,may,Top8-Monthly
+4,Lucas Murta,3,1,1,0,Elves,2026.05.29,may,Top8-Monthly
+5,Joao Gomes,0,0,1,0,White Weenie,2026.05.29,may,Top8-Monthly
+6,Gustavo Boldrin,0,0,1,0,Mono Blue Terror,2026.05.29,may,Top8-Monthly
+7,Rafael Sardeli,0,0,1,0,Rakdos Madness,2026.05.29,may,Top8-Monthly
+8,Pedro Mareschach,0,0,1,0,Mono White Heroic,2026.05.29,may,Top8-Monthly
+1,Gabriel Mantovani,7,2,0,1,Inside Out,2026.05.29,may,Groselha
+2,Rui C.,6,2,1,0,Inside Out,2026.05.29,may,Groselha
+3,Joao Gomes,6,2,1,0,White Weenie,2026.05.29,may,Groselha
+4,Pedro Mareschach,6,2,1,0,Mono White Heroic,2026.05.29,may,Groselha
+5,Matheus Grillo,4,1,1,1,Izzet Skred,2026.05.29,may,Groselha
+6,Gustavo Boldrin,3,1,2,0,Mono Blue Terror,2026.05.29,may,Groselha
+7,Rafael Sardeli,3,1,2,0,Elves,2026.05.29,may,Groselha
