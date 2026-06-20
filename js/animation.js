@@ -164,8 +164,13 @@ export function initAnimation({ chart, state, raw, months, events, processData }
   });
 
   // ─── Event filter ───
-  const ALL_EVENTS = ["Weekly", "CLM", "Groselha"];
+  const ALL_EVENTS = Array.isArray(events)
+    ? events.filter((ev) => typeof ev === "string" && ev.trim().length > 0)
+    : [];
   const eventFilterGroup = d3.select("#event-filter");
+
+  // Rebuild buttons from actual CSV event types.
+  eventFilterGroup.selectAll("*").remove();
 
   ALL_EVENTS.forEach((ev) => {
     eventFilterGroup
@@ -183,7 +188,7 @@ export function initAnimation({ chart, state, raw, months, events, processData }
       activeEvents.push(this.dataset.event);
     });
 
-    // All selected or none selected → no filter (show all)
+    // All selected or none selected -> no filter (show all)
     state.eventFilter = activeEvents.length === ALL_EVENTS.length || activeEvents.length === 0
       ? []
       : activeEvents;
