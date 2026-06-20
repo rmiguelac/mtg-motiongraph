@@ -113,10 +113,6 @@ export const DECK_THEMES = {
     image: "images/decks/simicauras.png",
     barColor: "#50b070",
   },
-  "Madness Burn": {
-    image: "images/decks/madnessburn.png",
-    barColor: "#ff6040",
-  },
   "Frognito Rakdos": {
     image: "images/decks/frognitorakdos.png",
     barColor: "#a06830",

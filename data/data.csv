@@ -37,7 +37,7 @@ position,name,points,wins,losses,draws,deck,date,month,event
 10,Gabriel Ginja,4,1,2,1,Altar Tron,2026.01.20,january,Weekly
 11,Jota G,0,0,4,0,Cycle Storm,2026.01.20,january,Weekly
 12,Arthur Moraes,0,0,4,0,Simic Auras,2026.01.20,january,Weekly
-1,Gabriel Mantovani,12,4,0,0,Madness Burn,2026.01.26,january,Weekly
+1,Gabriel Mantovani,12,4,0,0,Mono Red Madness,2026.01.26,january,Weekly
 2,Andre Borges,7,2,1,1,Familiars,2026.01.26,january,Weekly
 3,Bruno Lima,7,2,1,1,Jund Wildfire,2026.01.26,january,Weekly
 4,Rodrigo Camargo,6,2,2,0,Gruul Ramp,2026.01.26,january,Weekly
@@ -192,7 +192,7 @@ position,name,points,wins,losses,draws,deck,date,month,event
 2,Felipe GS,9,3,1,0,Mono Blue Faeries,2026.03.30,march,Weekly
 3,Lucas Murta,9,3,1,0,Gardens Pestilence,2026.03.30,march,Weekly
 4,Matheus Grillo,6,2,2,0,Mono Red Dredge,2026.03.30,march,Weekly
-5,Newton Falcao,6,2,2,0,Madness Burn,2026.03.30,march,Weekly
+5,Newton Falcao,6,2,2,0,Mono Red Madness,2026.03.30,march,Weekly
 6,Gabriel Mantovani,6,2,2,0,Grixis Affinity,2026.03.30,march,Weekly
 7,Rui C.,6,2,2,0,Jund Wildfire,2026.03.30,march,Weekly
 8,Filipe Doria,4,1,2,1,Temur Affitremors,2026.03.30,march,Weekly
