@@ -203,33 +203,71 @@ export function initAnimation({ chart, state, raw, months, events, processData }
     ? events.filter((ev) => typeof ev === "string" && ev.trim().length > 0)
     : [];
   const eventFilterGroup = d3.select("#event-filter");
+  const ALL_EVENT_TOKEN = "__all__";
+
+  function normalizeEventFilter(selection) {
+    if (!Array.isArray(selection) || selection.length === 0) return [];
+    if (selection.length >= ALL_EVENTS.length) return [];
+    return selection;
+  }
+
+  function applyEventSelection(selection) {
+    state.eventFilter = normalizeEventFilter(selection);
+    state.data = processData(raw, state.monthFilter, state.eventFilter);
+    syncEventButtons();
+    refreshPlaybackForMode();
+  }
+
+  function syncEventButtons() {
+    const isAll = state.eventFilter.length === 0;
+    eventFilterGroup.selectAll(".event-filter-btn").each(function () {
+      const ev = this.dataset.event;
+      const active = ev === ALL_EVENT_TOKEN
+        ? isAll
+        : isAll || state.eventFilter.includes(ev);
+      d3.select(this).classed("active", active);
+    });
+  }
 
   // Rebuild buttons from actual CSV event types.
   eventFilterGroup.selectAll("*").remove();
 
+  eventFilterGroup
+    .append("button")
+    .attr("class", "event-filter-btn")
+    .attr("data-event", ALL_EVENT_TOKEN)
+    .text("All");
+
   ALL_EVENTS.forEach((ev) => {
     eventFilterGroup
       .append("button")
-      .attr("class", "event-filter-btn active")
+      .attr("class", "event-filter-btn")
       .attr("data-event", ev)
       .text(ev);
   });
 
-  eventFilterGroup.selectAll(".event-filter-btn").on("click", function () {
-    d3.select(this).classed("active", !d3.select(this).classed("active"));
+  eventFilterGroup.selectAll(".event-filter-btn").on("click", function (event) {
+    const selected = this.dataset.event;
+    const isAll = state.eventFilter.length === 0;
 
-    const activeEvents = [];
-    eventFilterGroup.selectAll(".event-filter-btn.active").each(function () {
-      activeEvents.push(this.dataset.event);
-    });
+    if (selected === ALL_EVENT_TOKEN) {
+      applyEventSelection([]);
+      return;
+    }
 
-    // All selected or none selected -> no filter (show all)
-    state.eventFilter = activeEvents.length === ALL_EVENTS.length || activeEvents.length === 0
-      ? []
-      : activeEvents;
-    state.data = processData(raw, state.monthFilter, state.eventFilter);
-    refreshPlaybackForMode();
+    if (event.altKey || isAll) {
+      applyEventSelection([selected]);
+      return;
+    }
+
+    const next = new Set(state.eventFilter);
+    if (next.has(selected)) next.delete(selected);
+    else next.add(selected);
+
+    applyEventSelection(Array.from(next));
   });
+
+  syncEventButtons();
 
   finalResultsBtn.on("click", () => {
     state.finalResultsOnly = !state.finalResultsOnly;

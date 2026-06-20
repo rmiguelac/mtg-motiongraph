@@ -258,6 +258,12 @@ button.active {
   opacity: 1;
 }
 
+.event-filter-btn[data-event="__all__"].active {
+  background: #1f6feb;
+  border-color: #1f6feb;
+  color: #f0f6fc;
+}
+
 .event-filter-btn:hover {
   border-color: #8b949e;
   opacity: 0.85;
