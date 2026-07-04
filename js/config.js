@@ -69,7 +69,7 @@ export const DECK_THEMES = {
     image: "images/decks/monoredrally.png",
     barColor: "#e05040",
   },
-  "Naya Iniciativa": {
+  "Naya Initiative": {
     image: "images/decks/nayainiciativa.png",
     barColor: "#d0a040",
   },
@@ -332,6 +332,38 @@ export const DECK_THEMES = {
   "Golgari Control": {
     image: "images/decks/golgaricontrol.jpg",
     barColor: "#3a5a2a",
+  },
+  "Moggwarts": {
+    image: "images/decks/moggwarts.jpg",
+    barColor: "#c85a2a",
+  },
+  "Dimir Reanimate": {
+    image: "images/decks/dimirreanimate.jpg",
+    barColor: "#48365a",
+  },
+  "Mono Red Thermo-Madness": {
+    image: "images/decks/monoredthermomadness.jpg",
+    barColor: "#e8622a",
+  },
+  "Selesnya Auras": {
+    image: "images/decks/selesnyaauras.jpg",
+    barColor: "#c9c85a",
+  },
+  "Izzet Faeries": {
+    image: "images/decks/izzetfaeries.jpg",
+    barColor: "#a058c8",
+  },
+  "Poison Storm": {
+    image: "images/decks/poisonstorm.jpg",
+    barColor: "#5a9040",
+  },
+  "Jund Bow": {
+    image: "images/decks/jundbow.jpg",
+    barColor: "#7a5a30",
+  },
+  "Naya BowGates": {
+    image: "images/decks/nayabowgates.jpg",
+    barColor: "#c89050",
   },
 };
 
