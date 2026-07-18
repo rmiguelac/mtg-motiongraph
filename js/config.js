@@ -365,6 +365,34 @@ export const DECK_THEMES = {
     image: "images/decks/nayabowgates.jpg",
     barColor: "#c89050",
   },
+  "Izzet Abjure": {
+    image: "images/decks/izzetabjure.jpg",
+    barColor: "#a8524a",
+  },
+  "Allies Mill": {
+    image: "images/decks/alliesmill.jpg",
+    barColor: "#a8c8e0",
+  },
+  "Skred Faeries": {
+    image: "images/decks/skredfaeries.jpg",
+    barColor: "#7898c8",
+  },
+  "Temur Chrysalis Skred": {
+    image: "images/decks/temurchrysalisskred.jpg",
+    barColor: "#7a9860",
+  },
+  "Temur Skred": {
+    image: "images/decks/temurskred.jpg",
+    barColor: "#6a9868",
+  },
+  "Soul Sisters": {
+    image: "images/decks/soulsisters.jpg",
+    barColor: "#e0d0a0",
+  },
+  "Mardu Synthesizer": {
+    image: "images/decks/mardusynthesizer.jpg",
+    barColor: "#b8483a",
+  },
 };
 
 // ─── Color palette ───
