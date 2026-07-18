@@ -373,10 +373,6 @@ export const DECK_THEMES = {
     image: "images/decks/alliesmill.jpg",
     barColor: "#a8c8e0",
   },
-  "Skred Faeries": {
-    image: "images/decks/skredfaeries.jpg",
-    barColor: "#7898c8",
-  },
   "Temur Chrysalis Skred": {
     image: "images/decks/temurchrysalisskred.jpg",
     barColor: "#7a9860",
